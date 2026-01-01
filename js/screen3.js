@@ -30,9 +30,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const videoSound = document.getElementById('videoSound');
     const floatingEmojisContainer = document.getElementById('floating-emojis');
     
-    // Navigation Button Elements
+    // Navigation Button Elements - SEKARANG TOMBOL DI WATERMARK CONTAINER
     const nextMemoryBtn = document.getElementById('next-memory-btn');
-    const navSection = document.getElementById('nav-section');
+    // Navigation section dihapus, tidak diperlukan lagi
     
     // Initialize
     initGallery();
@@ -62,18 +62,14 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Function to ensure button is always visible
     function ensureButtonVisible() {
-        if (nextMemoryBtn && navSection) {
+        if (nextMemoryBtn) {
             nextMemoryBtn.style.display = 'inline-flex';
             nextMemoryBtn.style.visibility = 'visible';
-            nextMemoryBtn.style.opacity = '0.9';
+            nextMemoryBtn.style.opacity = '1';
             nextMemoryBtn.disabled = false;
             nextMemoryBtn.style.cursor = 'pointer';
             
-            navSection.style.display = 'block';
-            navSection.style.visibility = 'visible';
-            navSection.style.opacity = '1';
-            
-            console.log('✅ Button visibility ensured (watermark style)');
+            console.log('✅ Button visibility ensured (dalam watermark container)');
         }
     }
     
@@ -82,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('🔄 Next button clicked (watermark style)');
+            console.log('🔄 Next button clicked (dalam watermark container)');
         }
         
         // Ensure button is visible before processing
@@ -283,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (nextMemoryBtn) {
             nextMemoryBtn.disabled = true;
             nextMemoryBtn.style.cursor = 'wait';
-            nextMemoryBtn.style.opacity = '0.5';
+            nextMemoryBtn.style.opacity = '0.7';
         }
         
         // If all media items shown
@@ -363,14 +359,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (nextMemoryBtn) {
                             nextMemoryBtn.disabled = false;
                             nextMemoryBtn.style.cursor = 'pointer';
-                            nextMemoryBtn.style.opacity = '0.9';
-                        }
-                        
-                        // Ensure button is visible
-                        if (navSection) {
-                            navSection.style.display = 'block';
-                            navSection.style.opacity = '1';
-                            navSection.style.visibility = 'visible';
+                            nextMemoryBtn.style.opacity = '1';
                         }
                     }, 300);
                 }, 50);
@@ -437,7 +426,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (nextMemoryBtn) {
                 nextMemoryBtn.disabled = false;
                 nextMemoryBtn.style.cursor = 'pointer';
-                nextMemoryBtn.style.opacity = '0.9';
+                nextMemoryBtn.style.opacity = '1';
             }
             completeGallery();
         }
@@ -472,18 +461,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (nextMemoryBtn) {
             nextMemoryBtn.disabled = true;
             nextMemoryBtn.style.cursor = 'not-allowed';
-            nextMemoryBtn.style.opacity = '0.3';
-        }
-        
-        if (navSection) {
-            // Animate fade out for next button
-            navSection.style.opacity = '0';
-            navSection.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
-            
-            // Hide after animation
-            setTimeout(() => {
-                navSection.style.display = 'none';
-            }, 800);
+            nextMemoryBtn.style.opacity = '0.5';
         }
         
         // Remove event listeners
@@ -513,10 +491,19 @@ document.addEventListener('DOMContentLoaded', function() {
             header.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.2, 1)';
         }
         
+        // Hide watermark container with button
+        const watermarkContainer = document.querySelector('.screen-watermark');
+        if (watermarkContainer) {
+            watermarkContainer.style.opacity = '0';
+            watermarkContainer.style.transform = 'translateY(20px)';
+            watermarkContainer.style.transition = 'all 1s cubic-bezier(0.4, 0, 0.2, 1)';
+        }
+        
         // Show end section after delay
         setTimeout(() => {
             if (gallery) gallery.style.display = 'none';
             if (header) header.style.display = 'none';
+            if (watermarkContainer) watermarkContainer.style.display = 'none';
             
             if (endSection) {
                 endSection.classList.add('show');
@@ -587,40 +574,38 @@ document.addEventListener('DOMContentLoaded', function() {
         const colors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2'];
         
         for (let i = 0; i < confettiCount; i++) {
-            setTimeout(() => {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti-piece';
-                confetti.style.cssText = `
-                    position: fixed;
-                    width: 10px;
-                    height: 10px;
-                    background: ${colors[Math.floor(Math.random() * colors.length)]};
-                    top: -20px;
-                    left: ${Math.random() * 100}vw;
-                    border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
-                    z-index: 9998;
-                    pointer-events: none;
-                `;
-                
-                document.body.appendChild(confetti);
-                
-                // Animate confetti
-                const animation = confetti.animate([
-                    {
-                        transform: `translateY(0) rotate(0deg)`,
-                        opacity: 1
-                    },
-                    {
-                        transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 720}deg)`,
-                        opacity: 0
-                    }
-                ], {
-                    duration: Math.random() * 3000 + 2000,
-                    easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
-                });
-                
-                animation.onfinish = () => confetti.remove();
-            }, i * 50);
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti-piece';
+            confetti.style.cssText = `
+                position: fixed;
+                width: 10px;
+                height: 10px;
+                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                top: -20px;
+                left: ${Math.random() * 100}vw;
+                border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+                z-index: 9998;
+                pointer-events: none;
+            `;
+            
+            document.body.appendChild(confetti);
+            
+            // Animate confetti
+            const animation = confetti.animate([
+                {
+                    transform: `translateY(0) rotate(0deg)`,
+                    opacity: 1
+                },
+                {
+                    transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 720}deg)`,
+                    opacity: 0
+                }
+            ], {
+                duration: Math.random() * 3000 + 2000,
+                easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+            });
+            
+            animation.onfinish = () => confetti.remove();
         }
     }
     
