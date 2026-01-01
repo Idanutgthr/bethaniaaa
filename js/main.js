@@ -1,9 +1,9 @@
 // CONFIGURATION - Anda bisa ubah nilai ini sesuai kebutuhan
 const LOADING_CONFIG = {
-    totalDuration: 5000, // Total durasi loading dalam milidetik (default: 2000ms = 2 detik)
+    totalDuration: 20000, // Total durasi loading dalam milidetik (default: 2000ms = 2 detik)
     minLoadingTime: 1500, // Waktu minimum loading (meski cepat tetap menunggu)
     steps: 100, // Jumlah step persentase (default: 100 step = 1% per step)
-    fallbackTime: 8000, // Fallback timeout jika ada error (8 detik)
+    fallbackTime: 20000, // Fallback timeout jika ada error (8 detik)
 };
 
 // Main JavaScript untuk Loading Screen

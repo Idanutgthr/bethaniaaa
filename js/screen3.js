@@ -65,16 +65,15 @@ document.addEventListener('DOMContentLoaded', function() {
         if (nextMemoryBtn && navSection) {
             nextMemoryBtn.style.display = 'inline-flex';
             nextMemoryBtn.style.visibility = 'visible';
-            nextMemoryBtn.style.opacity = '1';
+            nextMemoryBtn.style.opacity = '0.9';
             nextMemoryBtn.disabled = false;
             nextMemoryBtn.style.cursor = 'pointer';
             
             navSection.style.display = 'block';
             navSection.style.visibility = 'visible';
             navSection.style.opacity = '1';
-            navSection.style.pointerEvents = 'auto';
             
-            console.log('✅ Button visibility ensured');
+            console.log('✅ Button visibility ensured (watermark style)');
         }
     }
     
@@ -83,7 +82,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e) {
             e.preventDefault();
             e.stopPropagation();
-            console.log('🔄 Next button clicked');
+            console.log('🔄 Next button clicked (watermark style)');
         }
         
         // Ensure button is visible before processing
@@ -284,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
         if (nextMemoryBtn) {
             nextMemoryBtn.disabled = true;
             nextMemoryBtn.style.cursor = 'wait';
-            nextMemoryBtn.style.opacity = '0.7';
+            nextMemoryBtn.style.opacity = '0.5';
         }
         
         // If all media items shown
@@ -364,7 +363,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         if (nextMemoryBtn) {
                             nextMemoryBtn.disabled = false;
                             nextMemoryBtn.style.cursor = 'pointer';
-                            nextMemoryBtn.style.opacity = '1';
+                            nextMemoryBtn.style.opacity = '0.9';
                         }
                         
                         // Ensure button is visible
@@ -438,7 +437,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (nextMemoryBtn) {
                 nextMemoryBtn.disabled = false;
                 nextMemoryBtn.style.cursor = 'pointer';
-                nextMemoryBtn.style.opacity = '1';
+                nextMemoryBtn.style.opacity = '0.9';
             }
             completeGallery();
         }
@@ -469,17 +468,16 @@ document.addEventListener('DOMContentLoaded', function() {
         SCREEN3_CONFIG.isGalleryCompleted = true;
         SCREEN3_CONFIG.isTransitioning = true;
         
-        // Disable next button but don't hide it immediately
+        // Disable next button
         if (nextMemoryBtn) {
             nextMemoryBtn.disabled = true;
             nextMemoryBtn.style.cursor = 'not-allowed';
-            nextMemoryBtn.style.opacity = '0.5';
+            nextMemoryBtn.style.opacity = '0.3';
         }
         
         if (navSection) {
             // Animate fade out for next button
             navSection.style.opacity = '0';
-            navSection.style.transform = 'translateY(20px)';
             navSection.style.transition = 'all 0.8s cubic-bezier(0.4, 0, 0.2, 1)';
             
             // Hide after animation
@@ -589,38 +587,40 @@ document.addEventListener('DOMContentLoaded', function() {
         const colors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2'];
         
         for (let i = 0; i < confettiCount; i++) {
-            const confetti = document.createElement('div');
-            confetti.className = 'confetti-piece';
-            confetti.style.cssText = `
-                position: fixed;
-                width: 10px;
-                height: 10px;
-                background: ${colors[Math.floor(Math.random() * colors.length)]};
-                top: -20px;
-                left: ${Math.random() * 100}vw;
-                border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
-                z-index: 9998;
-                pointer-events: none;
-            `;
-            
-            document.body.appendChild(confetti);
-            
-            // Animate confetti
-            const animation = confetti.animate([
-                {
-                    transform: `translateY(0) rotate(0deg)`,
-                    opacity: 1
-                },
-                {
-                    transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 720}deg)`,
-                    opacity: 0
-                }
-            ], {
-                duration: Math.random() * 3000 + 2000,
-                easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
-            });
-            
-            animation.onfinish = () => confetti.remove();
+            setTimeout(() => {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti-piece';
+                confetti.style.cssText = `
+                    position: fixed;
+                    width: 10px;
+                    height: 10px;
+                    background: ${colors[Math.floor(Math.random() * colors.length)]};
+                    top: -20px;
+                    left: ${Math.random() * 100}vw;
+                    border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+                    z-index: 9998;
+                    pointer-events: none;
+                `;
+                
+                document.body.appendChild(confetti);
+                
+                // Animate confetti
+                const animation = confetti.animate([
+                    {
+                        transform: `translateY(0) rotate(0deg)`,
+                        opacity: 1
+                    },
+                    {
+                        transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random() * 720}deg)`,
+                        opacity: 0
+                    }
+                ], {
+                    duration: Math.random() * 3000 + 2000,
+                    easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }, i * 50);
         }
     }
     

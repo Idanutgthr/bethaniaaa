@@ -1,30 +1,29 @@
-// FILE: js/global.js - REVISI
-const MUSIC_PLAYER = {
+// FILE: js/global.js - SIMPLE VERSION WITH HORIZONTAL HINT
+const SIMPLE_MUSIC = {
     songs: [
         { id: 1, name: 'Love Song 1', path: 'assets/audio/song1.mp3' },
         { id: 2, name: 'Love Song 2', path: 'assets/audio/song2.mp3' },
         { id: 3, name: 'Love Song 3', path: 'assets/audio/song3.mp3' }
     ],
     
-    currentSong: null,
+    currentSongIndex: 0,
     audioPlayer: null,
-    isPlaying: true,
+    isPlaying: false, // Start as false to wait for user click
     isMuted: false,
-    volume: 0.5,
-    controlButton: null,
-    volumeSlider: null,
     hasInitialized: false,
-    currentTime: 0,
+    controlButton: null,
+    hintElement: null,
     
     // Initialize music player
     init: function() {
         // Cegah inisialisasi ganda
         if (this.hasInitialized) {
             console.log('🎵 Music Player already initialized');
+            this.updateButton();
             return;
         }
         
-        console.log('🎵 Music Player Initialized');
+        console.log('🎵 Simple Music Player Initialized');
         this.hasInitialized = true;
         
         // Create audio element
@@ -32,184 +31,60 @@ const MUSIC_PLAYER = {
         this.audioPlayer.id = 'background-music';
         this.audioPlayer.loop = false;
         this.audioPlayer.preload = 'auto';
+        this.audioPlayer.volume = 0.5; // Fixed volume 50%
         
         // Add to body
         document.body.appendChild(this.audioPlayer);
         
-        // Create control button
-        this.createControlButton();
+        // Create control button with hint
+        this.createControlWithHint();
         
-        // Load saved state FIRST sebelum load song
+        // Load state from storage
         this.loadFromStorage();
         
-        // Setup song based on saved state
-        this.setupSong();
+        // Setup current song
+        this.setupCurrentSong();
         
         // Setup event listeners
         this.setupEventListeners();
         
-        // Start playing if not muted
-        if (this.isPlaying && !this.isMuted) {
-            this.play();
-        }
+        // Show initial hint
+        this.showHint();
         
-        // Save initial state
-        this.saveToStorage();
+        // Don't auto play - wait for user click
     },
     
-    // Setup song based on saved state
-    setupSong: function() {
-        // Cek apakah ada song yang sedang diputar di storage
-        const savedState = this.getSavedState();
+    // Create control button with horizontal hint
+    createControlWithHint: function() {
+        // Create container for button and hint
+        const container = document.createElement('div');
+        container.className = 'music-control-container';
         
-        if (savedState && savedState.currentSongId) {
-            // Cari song berdasarkan ID yang disimpan
-            const savedSong = this.songs.find(s => s.id === savedState.currentSongId);
-            
-            if (savedSong) {
-                // Gunakan song yang sama
-                this.currentSong = savedSong;
-                this.audioPlayer.src = savedSong.path;
-                this.currentTime = savedState.currentTime || 0;
-                
-                console.log(`🎵 Continuing: ${savedSong.name} at ${Math.round(this.currentTime)}s`);
-                
-                // Set current time
-                this.audioPlayer.currentTime = this.currentTime;
-                
-                // Mark song as played
-                this.markSongAsPlayed(savedSong.id);
-                return;
-            }
-        }
+        // Create hint text
+        this.hintElement = document.createElement('div');
+        this.hintElement.className = 'music-hint-text';
+        this.hintElement.innerHTML = `
+            <span class="hint-text">Click Anywhere To Play Music</span>
+            <span class="hint-arrow">→</span>
+        `;
         
-        // Jika tidak ada saved song, load random baru
-        this.loadRandomSong();
-    },
-    
-    // Load random song that hasn't been played
-    loadRandomSong: function() {
-        // Get played songs from localStorage
-        const playedSongs = this.getPlayedSongsFromStorage();
-        
-        // Filter songs that haven't been played
-        let availableSongs = this.songs.filter(song => 
-            !playedSongs.includes(song.id)
-        );
-        
-        // Jika semua lagu sudah diputar, reset playlist TAPI tetap lanjut dari lagu terakhir
-        if (availableSongs.length === 0) {
-            console.log('🎵 All songs played, but continuing current song...');
-            
-            // Coba cari song terakhir yang diputar
-            const lastSongId = playedSongs[playedSongs.length - 1];
-            const lastSong = this.songs.find(s => s.id === lastSongId);
-            
-            if (lastSong) {
-                this.currentSong = lastSong;
-                this.audioPlayer.src = lastSong.path;
-                console.log(`🎵 Continuing last song: ${lastSong.name}`);
-                return;
-            }
-            
-            // Jika tidak ada last song, reset dan mulai dari awal
-            localStorage.removeItem('played_songs');
-            availableSongs = [...this.songs];
-        }
-        
-        // Select random song from available songs
-        const randomIndex = Math.floor(Math.random() * availableSongs.length);
-        this.currentSong = availableSongs[randomIndex];
-        
-        // Set audio source
-        this.audioPlayer.src = this.currentSong.path;
-        
-        console.log(`🎵 New song loaded: ${this.currentSong.name}`);
-        
-        // Reset current time untuk lagu baru
-        this.currentTime = 0;
-        this.audioPlayer.currentTime = 0;
-        
-        // Mark song as played
-        this.markSongAsPlayed(this.currentSong.id);
-    },
-    
-    // Create music control button (SAMA seperti sebelumnya)
-    createControlButton: function() {
-        // Create button
+        // Create control button
         this.controlButton = document.createElement('button');
         this.controlButton.className = 'music-control-btn';
         this.controlButton.innerHTML = '<i class="fas fa-volume-up"></i>';
-        this.controlButton.title = 'Music Control (M)';
+        this.controlButton.title = 'Toggle Music (M)';
         
-        // Create volume slider container
-        const volumeContainer = document.createElement('div');
-        volumeContainer.className = 'volume-slider-container';
-        volumeContainer.innerHTML = `
-            <div class="volume-header">
-                <span>Volume</span>
-                <span class="volume-percentage">${Math.round(this.volume * 100)}%</span>
-            </div>
-            <input type="range" class="volume-slider" min="0" max="100" value="${this.volume * 100}">
-            <div class="volume-footer">
-                <span>🔇</span>
-                <span>🔊</span>
-            </div>
-        `;
-        
-        this.volumeSlider = volumeContainer.querySelector('.volume-slider');
-        this.volumePercentage = volumeContainer.querySelector('.volume-percentage');
+        // Add elements to container
+        container.appendChild(this.hintElement);
+        container.appendChild(this.controlButton);
         
         // Add to body
-        document.body.appendChild(this.controlButton);
-        document.body.appendChild(volumeContainer);
+        document.body.appendChild(container);
         
-        // Setup button events
-        this.setupButtonEvents();
-    },
-    
-    // Setup button events (SAMA seperti sebelumnya)
-    setupButtonEvents: function() {
-        const volumeContainer = document.querySelector('.volume-slider-container');
-        
-        // Toggle mute on button click
+        // Button click event
         this.controlButton.addEventListener('click', (e) => {
             e.stopPropagation();
             this.toggleMute();
-        });
-        
-        // Show volume slider on button hover
-        this.controlButton.addEventListener('mouseenter', () => {
-            volumeContainer.classList.add('show');
-        });
-        
-        this.controlButton.addEventListener('mouseleave', () => {
-            setTimeout(() => {
-                if (!volumeContainer.matches(':hover')) {
-                    volumeContainer.classList.remove('show');
-                }
-            }, 300);
-        });
-        
-        // Volume slider events
-        volumeContainer.addEventListener('mouseenter', () => {
-            volumeContainer.classList.add('show');
-        });
-        
-        volumeContainer.addEventListener('mouseleave', () => {
-            volumeContainer.classList.remove('show');
-        });
-        
-        // Volume slider change
-        this.volumeSlider.addEventListener('input', (e) => {
-            const value = e.target.value;
-            this.setVolume(value / 100);
-            this.volumePercentage.textContent = `${value}%`;
-            
-            // Unmute if volume > 0
-            if (value > 0 && this.isMuted) {
-                this.unmute();
-            }
         });
         
         // Keyboard shortcut (M key)
@@ -218,167 +93,129 @@ const MUSIC_PLAYER = {
                 this.toggleMute();
                 e.preventDefault();
             }
-            
-            // Arrow up/down for volume
-            if (e.key === 'ArrowUp') {
-                e.preventDefault();
-                this.setVolume(Math.min(1, this.volume + 0.1));
-                this.updateSlider();
-            } else if (e.key === 'ArrowDown') {
-                e.preventDefault();
-                this.setVolume(Math.max(0, this.volume - 0.1));
-                this.updateSlider();
-            }
         });
-    },
-    
-    // Get saved state from localStorage
-    getSavedState: function() {
-        try {
-            const saved = localStorage.getItem('music_player_state');
-            return saved ? JSON.parse(saved) : null;
-        } catch (e) {
-            console.error('Error reading saved state:', e);
-            return null;
-        }
-    },
-    
-    // Get played songs from localStorage
-    getPlayedSongsFromStorage: function() {
-        try {
-            const playedSongs = localStorage.getItem('played_songs');
-            return playedSongs ? JSON.parse(playedSongs) : [];
-        } catch (e) {
-            console.error('Error reading played songs:', e);
-            return [];
-        }
-    },
-    
-    // Mark song as played
-    markSongAsPlayed: function(songId) {
-        try {
-            let playedSongs = this.getPlayedSongsFromStorage();
-            if (!playedSongs.includes(songId)) {
-                playedSongs.push(songId);
-                localStorage.setItem('played_songs', JSON.stringify(playedSongs));
+        
+        // Global click to start music (first interaction)
+        const startMusicOnClick = () => {
+            if (!this.isPlaying && !this.isMuted) {
+                this.play();
+                this.hideHint();
             }
-        } catch (e) {
-            console.error('Error saving played song:', e);
+            document.removeEventListener('click', startMusicOnClick);
+        };
+        
+        document.addEventListener('click', startMusicOnClick);
+    },
+    
+    // Show hint
+    showHint: function() {
+        if (!this.hintElement) return;
+        
+        // Only show if music hasn't started yet
+        if (this.isPlaying || this.isMuted) {
+            this.hideHint();
+            return;
+        }
+        
+        this.hintElement.classList.add('show');
+        
+        // Auto hide after 10 seconds
+        setTimeout(() => {
+            this.hideHint();
+        }, 10000);
+    },
+    
+    // Hide hint
+    hideHint: function() {
+        if (this.hintElement) {
+            this.hintElement.classList.remove('show');
         }
     },
     
-    // Load state from localStorage
-    loadFromStorage: function() {
-        try {
-            const saved = this.getSavedState();
-            if (saved) {
-                console.log('🎵 Loading saved music state:', saved);
-                
-                // Load semua state
-                this.isPlaying = saved.isPlaying !== undefined ? saved.isPlaying : true;
-                this.isMuted = saved.isMuted || false;
-                this.volume = saved.volume || 0.5;
-                this.currentTime = saved.currentTime || 0;
-                
-                // Apply volume
-                this.audioPlayer.volume = this.isMuted ? 0 : this.volume;
-                
-                // Update UI
-                this.updateButtonState();
-                this.updateSlider();
-                
-                return true;
-            }
-        } catch (e) {
-            console.error('Error loading music state:', e);
-        }
-        return false;
-    },
-    
-    // Save state to localStorage dengan timestamp yang lebih panjang
-    saveToStorage: function() {
-        try {
-            const state = {
-                isPlaying: this.isPlaying,
-                isMuted: this.isMuted,
-                volume: this.volume,
-                currentSongId: this.currentSong ? this.currentSong.id : null,
-                currentTime: this.audioPlayer ? this.audioPlayer.currentTime : 0,
-                timestamp: Date.now(),
-                // Tambahan: simpan waktu terakhir update
-                lastUpdated: new Date().toISOString()
-            };
+    // Setup current song based on saved state
+    setupCurrentSong: function() {
+        // Try to load from storage
+        const savedState = this.getSavedState();
+        
+        if (savedState && savedState.currentSongIndex !== undefined) {
+            // Continue from saved song
+            this.currentSongIndex = savedState.currentSongIndex;
+            const currentTime = savedState.currentTime || 0;
             
-            localStorage.setItem('music_player_state', JSON.stringify(state));
+            console.log(`🎵 Continuing song ${this.currentSongIndex + 1} at ${Math.round(currentTime)}s`);
             
-            // Juga simpan secara terpisah current time untuk recovery
-            if (this.audioPlayer && this.currentSong) {
-                localStorage.setItem('music_current_time', this.audioPlayer.currentTime);
-                localStorage.setItem('music_current_song_id', this.currentSong.id);
-            }
+            // Load the song
+            this.loadSong(this.currentSongIndex, currentTime);
             
-        } catch (e) {
-            console.error('Error saving music state:', e);
+            // Restore play state
+            this.isPlaying = savedState.isPlaying;
+            this.isMuted = savedState.isMuted;
+        } else {
+            // Start from first song
+            this.currentSongIndex = 0;
+            this.loadSong(0, 0);
+            console.log('🎵 Starting from song 1');
         }
     },
     
-    // Save current time secara periodic
-    saveCurrentTime: function() {
-        if (this.audioPlayer && this.currentSong) {
-            try {
-                const timeData = {
-                    songId: this.currentSong.id,
-                    currentTime: this.audioPlayer.currentTime,
-                    timestamp: Date.now()
-                };
-                localStorage.setItem('music_time_data', JSON.stringify(timeData));
-            } catch (e) {
-                console.error('Error saving current time:', e);
-            }
+    // Load specific song
+    loadSong: function(index, startTime = 0) {
+        // Ensure index is within bounds
+        if (index < 0) index = 0;
+        if (index >= this.songs.length) index = 0;
+        
+        this.currentSongIndex = index;
+        const song = this.songs[index];
+        
+        // Set audio source
+        this.audioPlayer.src = song.path;
+        this.audioPlayer.currentTime = startTime;
+        
+        console.log(`🎵 Loaded: ${song.name} (starting at ${Math.round(startTime)}s)`);
+    },
+    
+    // Play next song in sequence (1→2→3→1→...)
+    playNextSong: function() {
+        // Save current time before switching
+        this.saveToStorage();
+        
+        // Move to next song
+        this.currentSongIndex++;
+        
+        // Loop back to first song after last
+        if (this.currentSongIndex >= this.songs.length) {
+            this.currentSongIndex = 0;
         }
+        
+        // Load next song
+        this.loadSong(this.currentSongIndex, 0);
+        
+        // Play if not muted
+        if (this.isPlaying && !this.isMuted) {
+            this.play();
+        }
+        
+        // Save new state
+        this.saveToStorage();
+        
+        console.log(`🎵 Next song: ${this.currentSongIndex + 1}`);
     },
     
     // Play music
     play: function() {
         if (this.audioPlayer && !this.isMuted) {
-            // Cek jika ada saved time yang lebih baru
-            this.checkAndRecoverTime();
-            
             const playPromise = this.audioPlayer.play();
             
             playPromise.catch(error => {
                 console.log('Autoplay prevented:', error);
-                this.showPlayHint();
             });
             
             this.isPlaying = true;
-            if (this.controlButton) {
-                this.controlButton.classList.add('playing');
-            }
-            
-            // Start auto-save interval
-            this.startAutoSave();
-            
+            this.updateButton();
+            this.hideHint();
             this.saveToStorage();
-        }
-    },
-    
-    // Check and recover time from storage
-    checkAndRecoverTime: function() {
-        try {
-            const timeData = localStorage.getItem('music_time_data');
-            if (timeData) {
-                const data = JSON.parse(timeData);
-                
-                // Jika waktu disimpan kurang dari 10 detik yang lalu, gunakan
-                if (Date.now() - data.timestamp < 10000 && 
-                    data.songId === this.currentSong.id) {
-                    this.audioPlayer.currentTime = data.currentTime;
-                    console.log(`🎵 Recovered time: ${Math.round(data.currentTime)}s`);
-                }
-            }
-        } catch (e) {
-            console.error('Error recovering time:', e);
+            
+            console.log('🎵 Music started playing');
         }
     },
     
@@ -387,26 +224,12 @@ const MUSIC_PLAYER = {
         if (this.audioPlayer) {
             this.audioPlayer.pause();
             this.isPlaying = false;
-            if (this.controlButton) {
-                this.controlButton.classList.remove('playing');
-            }
-            
-            // Save time when paused
-            this.saveCurrentTime();
+            this.updateButton();
             this.saveToStorage();
         }
     },
     
-    // Toggle play/pause
-    togglePlay: function() {
-        if (this.isPlaying) {
-            this.pause();
-        } else {
-            this.play();
-        }
-    },
-    
-    // Toggle mute/unmute (SAMA seperti sebelumnya)
+    // Toggle mute/unmute
     toggleMute: function() {
         if (this.isMuted) {
             this.unmute();
@@ -414,13 +237,11 @@ const MUSIC_PLAYER = {
             this.mute();
         }
         
-        // Visual feedback
-        if (this.controlButton) {
-            this.controlButton.style.transform = 'scale(0.9)';
-            setTimeout(() => {
-                this.controlButton.style.transform = '';
-            }, 150);
-        }
+        // Button animation
+        this.controlButton.style.transform = 'scale(0.9)';
+        setTimeout(() => {
+            this.controlButton.style.transform = '';
+        }, 150);
     },
     
     // Mute audio
@@ -429,10 +250,8 @@ const MUSIC_PLAYER = {
         if (this.audioPlayer) {
             this.audioPlayer.volume = 0;
         }
-        if (this.controlButton) {
-            this.controlButton.classList.add('muted');
-            this.controlButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
-        }
+        this.controlButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
+        this.controlButton.classList.add('muted');
         this.saveToStorage();
         console.log('🔇 Music muted');
     },
@@ -441,14 +260,12 @@ const MUSIC_PLAYER = {
     unmute: function() {
         this.isMuted = false;
         if (this.audioPlayer) {
-            this.audioPlayer.volume = this.volume;
+            this.audioPlayer.volume = 0.5; // Fixed volume
         }
-        if (this.controlButton) {
-            this.controlButton.classList.remove('muted');
-            this.controlButton.innerHTML = '<i class="fas fa-volume-up"></i>';
-        }
+        this.controlButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+        this.controlButton.classList.remove('muted');
         
-        // If was playing before mute, resume play
+        // Resume playing if was playing
         if (this.isPlaying) {
             this.play();
         }
@@ -457,103 +274,108 @@ const MUSIC_PLAYER = {
         console.log('🔊 Music unmuted');
     },
     
-    // Set volume (0-1)
-    setVolume: function(volume) {
-        this.volume = Math.max(0, Math.min(1, volume));
-        
-        if (!this.isMuted && this.audioPlayer) {
-            this.audioPlayer.volume = this.volume;
-        }
-        
-        this.saveToStorage();
-        console.log(`🔊 Volume: ${Math.round(this.volume * 100)}%`);
-    },
-    
-    // Update slider position
-    updateSlider: function() {
-        if (this.volumeSlider && this.volumePercentage) {
-            this.volumeSlider.value = this.volume * 100;
-            this.volumePercentage.textContent = `${Math.round(this.volume * 100)}%`;
-        }
-    },
-    
     // Update button state
-    updateButtonState: function() {
+    updateButton: function() {
         if (!this.controlButton) return;
         
         if (this.isMuted) {
-            this.controlButton.classList.add('muted');
             this.controlButton.innerHTML = '<i class="fas fa-volume-mute"></i>';
-        } else {
-            this.controlButton.classList.remove('muted');
-            this.controlButton.innerHTML = '<i class="fas fa-volume-up"></i>';
-        }
-        
-        if (this.isPlaying && !this.isMuted) {
-            this.controlButton.classList.add('playing');
-        } else {
+            this.controlButton.classList.add('muted');
             this.controlButton.classList.remove('playing');
+        } else {
+            this.controlButton.innerHTML = '<i class="fas fa-volume-up"></i>';
+            this.controlButton.classList.remove('muted');
+            
+            if (this.isPlaying) {
+                this.controlButton.classList.add('playing');
+            } else {
+                this.controlButton.classList.remove('playing');
+            }
         }
     },
     
-    // Skip to next song (HANYA ketika lagu selesai)
-    next: function() {
-        // Save current time sebelum pindah lagu
-        this.saveCurrentTime();
-        
-        // Load new song
-        this.loadRandomSong();
-        
-        // Play jika tidak muted
-        if (this.isPlaying && !this.isMuted) {
-            this.play();
+    // Get saved state from localStorage
+    getSavedState: function() {
+        try {
+            const saved = localStorage.getItem('simple_music_state');
+            return saved ? JSON.parse(saved) : null;
+        } catch (e) {
+            console.error('Error reading saved state:', e);
+            return null;
         }
-        
-        // Save state
-        this.saveToStorage();
     },
     
-    // Setup event listeners dengan time tracking
+    // Save state to localStorage
+    saveToStorage: function() {
+        try {
+            const state = {
+                currentSongIndex: this.currentSongIndex,
+                currentTime: this.audioPlayer ? this.audioPlayer.currentTime : 0,
+                isPlaying: this.isPlaying,
+                isMuted: this.isMuted,
+                timestamp: Date.now()
+            };
+            
+            localStorage.setItem('simple_music_state', JSON.stringify(state));
+        } catch (e) {
+            console.error('Error saving music state:', e);
+        }
+    },
+    
+    // Load state from localStorage
+    loadFromStorage: function() {
+        try {
+            const saved = this.getSavedState();
+            if (saved) {
+                console.log('🎵 Loading saved music state');
+                
+                // Load state
+                this.isPlaying = saved.isPlaying !== undefined ? saved.isPlaying : false;
+                this.isMuted = saved.isMuted || false;
+                
+                // Update button
+                this.updateButton();
+                
+                // Hide hint if already playing
+                if (this.isPlaying) {
+                    this.hideHint();
+                }
+            }
+        } catch (e) {
+            console.error('Error loading music state:', e);
+        }
+    },
+    
+    // Setup event listeners
     setupEventListeners: function() {
         if (!this.audioPlayer) return;
         
         // When song ends, play next
         this.audioPlayer.addEventListener('ended', () => {
-            console.log('🎵 Song ended naturally, playing next...');
-            this.next();
+            console.log('🎵 Song ended, playing next...');
+            this.playNextSong();
         });
         
-        // Track time updates untuk auto-save
-        this.audioPlayer.addEventListener('timeupdate', () => {
-            this.currentTime = this.audioPlayer.currentTime;
-        });
+        // Auto-save every 3 seconds
+        setInterval(() => {
+            if (this.audioPlayer && !this.audioPlayer.paused) {
+                this.saveToStorage();
+            }
+        }, 3000);
         
-        // Handle errors
-        this.audioPlayer.addEventListener('error', (e) => {
-            console.error('Audio error:', e);
-            // Coba lagu berikutnya
-            setTimeout(() => this.next(), 1000);
-        });
-        
-        // Save state ketika leaving page
+        // Save when leaving page
         window.addEventListener('beforeunload', () => {
             console.log('💾 Saving music state before page unload...');
-            this.saveCurrentTime();
             this.saveToStorage();
         });
         
-        // Handle page visibility (tab switch)
+        // Handle page visibility
         document.addEventListener('visibilitychange', () => {
             if (document.hidden) {
-                // Page hidden
-                console.log('📱 Page hidden, saving music state...');
-                this.saveCurrentTime();
+                // Page hidden, save state
                 this.saveToStorage();
             } else {
-                // Page visible, coba resume
-                console.log('📱 Page visible, checking music state...');
-                this.loadFromStorage();
-                
+                // Page visible, try to resume
                 if (this.isPlaying && !this.isMuted && this.audioPlayer.paused) {
                     this.audioPlayer.play().catch(e => {
                         console.log('Resume prevented:', e);
@@ -561,163 +383,25 @@ const MUSIC_PLAYER = {
                 }
             }
         });
-        
-        // Auto-save setiap 5 detik
-        this.startAutoSave();
-    },
-    
-    // Start auto-save interval
-    startAutoSave: function() {
-        // Clear existing interval
-        if (this.autoSaveInterval) {
-            clearInterval(this.autoSaveInterval);
-        }
-        
-        // Save every 5 seconds
-        this.autoSaveInterval = setInterval(() => {
-            if (this.audioPlayer && !this.audioPlayer.paused) {
-                this.saveCurrentTime();
-            }
-        }, 5000);
-    },
-    
-    // Show play hint (untuk autoplay restrictions)
-    showPlayHint: function() {
-        // ... (kode sama seperti sebelumnya)
-        const hint = document.createElement('div');
-        hint.className = 'music-hint';
-        hint.innerHTML = `
-            <div class="hint-content">
-                <i class="fas fa-music"></i>
-                <p>Click anywhere to enable music</p>
-                <button class="hint-btn">OK</button>
-            </div>
-        `;
-        
-        const style = document.createElement('style');
-        style.textContent = `
-            .music-hint {
-                position: fixed;
-                top: 80px;
-                right: 20px;
-                background: rgba(0, 0, 0, 0.8);
-                color: white;
-                padding: 15px;
-                border-radius: 15px;
-                z-index: 10000;
-                backdrop-filter: blur(10px);
-                border: 2px solid var(--color-pink-medium);
-                animation: slideInRight 0.5s ease;
-                max-width: 200px;
-            }
-            .hint-content {
-                text-align: center;
-            }
-            .hint-content i {
-                font-size: 2rem;
-                color: var(--color-pink-light);
-                margin-bottom: 10px;
-            }
-            .hint-content p {
-                font-size: 0.9rem;
-                margin-bottom: 10px;
-                line-height: 1.4;
-            }
-            .hint-btn {
-                background: var(--color-pink-medium);
-                color: white;
-                border: none;
-                padding: 8px 20px;
-                border-radius: 20px;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s;
-            }
-            .hint-btn:hover {
-                background: var(--color-pink-dark);
-                transform: scale(1.05);
-            }
-            @keyframes slideInRight {
-                from {
-                    opacity: 0;
-                    transform: translateX(50px);
-                }
-                to {
-                    opacity: 1;
-                    transform: translateX(0);
-                }
-            }
-        `;
-        
-        document.head.appendChild(style);
-        document.body.appendChild(hint);
-        
-        document.addEventListener('click', function removeHint() {
-            hint.remove();
-            document.removeEventListener('click', removeHint);
-            MUSIC_PLAYER.play();
-        }, { once: true });
-        
-        hint.querySelector('.hint-btn').addEventListener('click', () => {
-            hint.remove();
-            MUSIC_PLAYER.play();
-        });
-        
-        setTimeout(() => {
-            if (hint.parentNode) hint.remove();
-        }, 10000);
     }
 };
 
-// Enhanced initialization dengan page transition tracking
+// Initialize on DOM ready
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 Page loaded:', window.location.pathname);
     
-    // Cek jika ini page pertama kali atau page transition
-    const isFirstLoad = !sessionStorage.getItem('music_player_initialized');
-    
-    if (isFirstLoad) {
-        console.log('🚀 First load, initializing music player...');
-        sessionStorage.setItem('music_player_initialized', 'true');
-        MUSIC_PLAYER.init();
-    } else {
-        console.log('🔄 Page transition, checking music player state...');
-        
-        // Jika music player belum diinisialisasi, initialize
-        if (!MUSIC_PLAYER.hasInitialized) {
-            MUSIC_PLAYER.init();
-        } else {
-            // Sudah initialized, cukup update state dari storage
-            MUSIC_PLAYER.loadFromStorage();
-            
-            // Cek jika perlu resume play
-            if (MUSIC_PLAYER.isPlaying && !MUSIC_PLAYER.isMuted) {
-                if (MUSIC_PLAYER.audioPlayer && MUSIC_PLAYER.audioPlayer.paused) {
-                    MUSIC_PLAYER.audioPlayer.play().catch(e => {
-                        console.log('Resume on page transition prevented:', e);
-                    });
-                }
-            }
-        }
-    }
-    
-    // Handle page navigation
-    window.addEventListener('popstate', function() {
-        console.log('🔙 Back/forward navigation detected');
-        MUSIC_PLAYER.saveCurrentTime();
-    });
+    // Initialize music player
+    SIMPLE_MUSIC.init();
 });
 
-// Handle browser back/forward cache
+// Handle page transitions
 window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
-        console.log('🔄 Page restored from bfcache');
-        // Reload state dari storage
-        if (MUSIC_PLAYER.hasInitialized) {
-            MUSIC_PLAYER.loadFromStorage();
-        }
+        console.log('🔄 Page restored from cache');
+        // Update button state
+        SIMPLE_MUSIC.updateButton();
     }
 });
 
-// Export untuk debugging
-window.MUSIC_PLAYER = MUSIC_PLAYER;
+// Export for debugging
+window.SIMPLE_MUSIC = SIMPLE_MUSIC;

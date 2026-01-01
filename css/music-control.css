@@ -1,8 +1,74 @@
-/* ===== MUSIC CONTROL BUTTON ===== */
-.music-control-btn {
+/* ===== MUSIC CONTROL WITH HORIZONTAL HINT ===== */
+
+/* Container for button and hint */
+.music-control-container {
     position: fixed;
     top: 20px;
     right: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 9999;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hint text (horizontal, left of button) */
+.music-hint-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(15px);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 25px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 500;
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(20px);
+    visibility: hidden;
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    border: 2px solid rgba(253, 121, 121, 0.3);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    max-width: 0;
+    overflow: hidden;
+}
+
+.music-hint-text.show {
+    opacity: 1;
+    transform: translateX(0);
+    visibility: visible;
+    max-width: 300px;
+}
+
+.hint-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.hint-text::before {
+    content: '🎵';
+    font-size: 1.1rem;
+}
+
+.hint-arrow {
+    color: var(--color-pink-light);
+    font-size: 1.3rem;
+    font-weight: bold;
+    animation: arrowBounce 1s ease-in-out infinite;
+}
+
+@keyframes arrowBounce {
+    0%, 100% { transform: translateX(0); }
+    50% { transform: translateX(5px); }
+}
+
+/* Control button */
+.music-control-btn {
     width: 50px;
     height: 50px;
     border-radius: 50%;
@@ -15,12 +81,12 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    z-index: 9999;
     box-shadow: 
         0 5px 15px rgba(0, 0, 0, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     animation: buttonFloat 3s ease-in-out infinite;
+    flex-shrink: 0;
 }
 
 .music-control-btn:hover {
@@ -45,55 +111,26 @@
     background: rgba(253, 121, 121, 0.4);
 }
 
-.music-control-btn::before {
+.music-control-btn.playing::after {
     content: '';
     position: absolute;
-    top: -3px;
-    left: -3px;
-    right: -3px;
-    bottom: -3px;
-    background: linear-gradient(45deg, 
-        rgba(253, 121, 121, 0.5), 
-        rgba(255, 255, 255, 0.3), 
-        rgba(254, 234, 201, 0.5));
+    top: -5px;
+    left: -5px;
+    right: -5px;
+    bottom: -5px;
     border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    animation: pulse 2s ease-in-out infinite;
     z-index: -1;
-    animation: buttonGlow 3s ease-in-out infinite;
-    opacity: 0.7;
 }
 
 @keyframes buttonFloat {
     0%, 100% { 
-        transform: translateY(0); 
+        transform: translateY(0) scale(1); 
     }
     50% { 
-        transform: translateY(-5px); 
+        transform: translateY(-5px) scale(1.05); 
     }
-}
-
-@keyframes buttonGlow {
-    0%, 100% { 
-        opacity: 0.5;
-        transform: scale(1);
-    }
-    50% { 
-        opacity: 0.8;
-        transform: scale(1.05);
-    }
-}
-
-/* Pulsing effect for music playing */
-.music-control-btn.playing::after {
-    content: '';
-    position: absolute;
-    top: -8px;
-    left: -8px;
-    right: -8px;
-    bottom: -8px;
-    border-radius: 50%;
-    border: 2px solid rgba(255, 255, 255, 0.3);
-    animation: pulse 2s ease-in-out infinite;
-    z-index: -2;
 }
 
 @keyframes pulse {
@@ -102,170 +139,149 @@
         opacity: 0.7;
     }
     70% {
-        transform: scale(1.2);
+        transform: scale(1.3);
         opacity: 0;
     }
     100% {
-        transform: scale(1.2);
+        transform: scale(1.3);
         opacity: 0;
     }
 }
 
-/* Volume slider (appears on hover) */
-.volume-slider-container {
-    position: absolute;
-    top: 60px;
-    right: 0;
-    background: rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(15px);
-    border-radius: 25px;
-    padding: 15px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    z-index: 10000;
-    border: 2px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    min-width: 180px;
-}
+/* ===== RESPONSIVE DESIGN ===== */
 
-.volume-slider-container.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-.volume-slider-container::before {
-    content: '';
-    position: absolute;
-    top: -6px;
-    right: 20px;
-    width: 12px;
-    height: 12px;
-    background: rgba(0, 0, 0, 0.8);
-    transform: rotate(45deg);
-    border-top: 2px solid rgba(255, 255, 255, 0.2);
-    border-left: 2px solid rgba(255, 255, 255, 0.2);
-}
-
-.volume-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-    color: white;
-    font-family: 'Poppins', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.volume-header span {
-    opacity: 0.8;
-}
-
-.volume-percentage {
-    font-size: 0.8rem;
-    color: var(--color-cream);
-    font-weight: 700;
-}
-
-.volume-slider {
-    width: 100%;
-    height: 6px;
-    -webkit-appearance: none;
-    background: rgba(255, 255, 255, 0.2);
-    border-radius: 3px;
-    outline: none;
-    margin: 10px 0;
-}
-
-.volume-slider::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: var(--color-white);
-    cursor: pointer;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
-    border: 2px solid var(--color-pink-medium);
-    transition: all 0.2s;
-}
-
-.volume-slider::-webkit-slider-thumb:hover {
-    transform: scale(1.1);
-    background: var(--color-cream);
-}
-
-.volume-footer {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 10px;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
-}
-
-/* Responsive Design */
+/* Tablet */
 @media (max-width: 768px) {
-    .music-control-btn {
+    .music-control-container {
         top: 15px;
         right: 15px;
+        gap: 12px;
+    }
+    
+    .music-hint-text {
+        font-size: 0.85rem;
+        padding: 8px 15px;
+        border-radius: 20px;
+    }
+    
+    .music-hint-text.show {
+        max-width: 250px;
+    }
+    
+    .hint-arrow {
+        font-size: 1.2rem;
+    }
+    
+    .music-control-btn {
         width: 45px;
         height: 45px;
         font-size: 1.3rem;
     }
-    
-    .volume-slider-container {
-        top: 55px;
-        right: -5px;
-        min-width: 160px;
-        padding: 12px;
-    }
 }
 
+/* Mobile */
 @media (max-width: 480px) {
-    .music-control-btn {
+    .music-control-container {
         top: 10px;
         right: 10px;
+        gap: 10px;
+    }
+    
+    .music-hint-text {
+        font-size: 0.8rem;
+        padding: 7px 12px;
+        border-radius: 18px;
+    }
+    
+    .music-hint-text.show {
+        max-width: 200px;
+    }
+    
+    .hint-text::before {
+        font-size: 0.9rem;
+    }
+    
+    .hint-arrow {
+        font-size: 1.1rem;
+    }
+    
+    .music-control-btn {
         width: 40px;
         height: 40px;
         font-size: 1.1rem;
     }
     
-    .volume-slider-container {
-        top: 50px;
-        right: -10px;
-        min-width: 140px;
-        padding: 10px;
-    }
-    
-    .volume-header {
-        font-size: 0.8rem;
+    /* Hide hint text on very small screens, show only icon */
+    @media (max-width: 360px) {
+        .music-hint-text {
+            padding: 8px;
+            background: rgba(0, 0, 0, 0.9);
+        }
+        
+        .hint-text span:not(.hint-text::before) {
+            display: none;
+        }
+        
+        .hint-arrow {
+            display: none;
+        }
+        
+        .music-hint-text.show {
+            max-width: 40px;
+        }
     }
 }
 
-/* Landscape mode */
-@media (max-height: 600px) and (orientation: landscape) {
-    .music-control-btn {
+/* Small height devices */
+@media (max-height: 600px) {
+    .music-control-container {
         top: 10px;
         right: 10px;
+    }
+    
+    .music-hint-text {
+        font-size: 0.8rem;
+        padding: 6px 10px;
+    }
+    
+    .music-control-btn {
         width: 35px;
         height: 35px;
         font-size: 1rem;
     }
+}
+
+/* Landscape mode */
+@media (orientation: landscape) and (max-height: 500px) {
+    .music-control-container {
+        top: 5px;
+        right: 5px;
+        gap: 8px;
+    }
     
-    .volume-slider-container {
-        top: 45px;
-        min-width: 130px;
+    .music-hint-text {
+        font-size: 0.75rem;
+        padding: 5px 8px;
+    }
+    
+    .music-control-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.9rem;
     }
 }
 
-/* Animation for mute/unmute */
-@keyframes iconBounce {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.2); }
+/* Hide hint when music is playing or muted */
+.music-control-btn.playing ~ .music-hint-text,
+.music-control-btn.muted ~ .music-hint-text {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transform: translateX(20px) !important;
+    max-width: 0 !important;
 }
 
-.music-control-btn:active i {
-    animation: iconBounce 0.3s ease;
+/* Smooth transition for hint disappearance */
+.music-hint-text {
+    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+                max-width 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.1s;
 }
