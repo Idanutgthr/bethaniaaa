@@ -599,7 +599,7 @@ body {
 }
 
 .proposal-title {
-    font-family: 'Fredoka One', cursive;
+    font-family: 'Fredoka One', cursive !important;
     font-size: clamp(1.8rem, 6vw, 2.8rem);
     color: var(--color-white);
     margin-bottom: clamp(25px, 5vh, 40px);
@@ -643,7 +643,7 @@ body {
     border: none;
     border-radius: 50px;
     cursor: pointer;
-    font-family: 'Fredoka One', cursive;
+    font-family: 'Fredoka One', cursive !important;
     font-size: clamp(1.2rem, 4vw, 1.8rem);
     font-weight: 800;
     letter-spacing: clamp(1px, 0.5vw, 2px);

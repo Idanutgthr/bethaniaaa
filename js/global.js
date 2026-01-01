@@ -1,4 +1,4 @@
-// FILE: js/global.js - REVISI (tanpa slider volume)
+// FILE: js/global.js - REVISI (sequential loop)
 const MUSIC_PLAYER = {
     songs: [
         { id: 1, name: 'Love Song 1', path: 'assets/audio/song1.mp3' },
@@ -14,6 +14,7 @@ const MUSIC_PLAYER = {
     controlButton: null,
     hasInitialized: false,
     currentTime: 0,
+    currentSongIndex: 0, // Tambahkan untuk track indeks lagu saat ini
     
     // Initialize music player
     init: function() {
@@ -29,7 +30,7 @@ const MUSIC_PLAYER = {
         // Create audio element
         this.audioPlayer = document.createElement('audio');
         this.audioPlayer.id = 'background-music';
-        this.audioPlayer.loop = false;
+        this.audioPlayer.loop = false; // Nonaktifkan loop per lagu, kita handle manual
         this.audioPlayer.preload = 'auto';
         
         // Add to body
@@ -71,66 +72,50 @@ const MUSIC_PLAYER = {
                 this.audioPlayer.src = savedSong.path;
                 this.currentTime = savedState.currentTime || 0;
                 
+                // Cari indeks lagu saat ini untuk sequential play
+                this.currentSongIndex = this.songs.findIndex(s => s.id === savedSong.id);
+                if (this.currentSongIndex === -1) this.currentSongIndex = 0;
+                
                 console.log(`🎵 Continuing: ${savedSong.name} at ${Math.round(this.currentTime)}s`);
                 
                 // Set current time
                 this.audioPlayer.currentTime = this.currentTime;
-                
-                // Mark song as played
-                this.markSongAsPlayed(savedSong.id);
                 return;
             }
         }
         
-        // Jika tidak ada saved song, load random baru
-        this.loadRandomSong();
+        // Jika tidak ada saved song, mulai dari song1
+        this.loadFirstSong();
     },
     
-    // Load random song that hasn't been played
-    loadRandomSong: function() {
-        // Get played songs from localStorage
-        const playedSongs = this.getPlayedSongsFromStorage();
-        
-        // Filter songs that haven't been played
-        let availableSongs = this.songs.filter(song => 
-            !playedSongs.includes(song.id)
-        );
-        
-        // Jika semua lagu sudah diputar, reset playlist TAPI tetap lanjut dari lagu terakhir
-        if (availableSongs.length === 0) {
-            console.log('🎵 All songs played, but continuing current song...');
-            
-            // Coba cari song terakhir yang diputar
-            const lastSongId = playedSongs[playedSongs.length - 1];
-            const lastSong = this.songs.find(s => s.id === lastSongId);
-            
-            if (lastSong) {
-                this.currentSong = lastSong;
-                this.audioPlayer.src = lastSong.path;
-                console.log(`🎵 Continuing last song: ${lastSong.name}`);
-                return;
-            }
-            
-            // Jika tidak ada last song, reset dan mulai dari awal
-            localStorage.removeItem('played_songs');
-            availableSongs = [...this.songs];
-        }
-        
-        // Select random song from available songs
-        const randomIndex = Math.floor(Math.random() * availableSongs.length);
-        this.currentSong = availableSongs[randomIndex];
-        
-        // Set audio source
+    // Load first song (song1)
+    loadFirstSong: function() {
+        this.currentSongIndex = 0;
+        this.currentSong = this.songs[0];
         this.audioPlayer.src = this.currentSong.path;
-        
-        console.log(`🎵 New song loaded: ${this.currentSong.name}`);
-        
-        // Reset current time untuk lagu baru
         this.currentTime = 0;
         this.audioPlayer.currentTime = 0;
         
-        // Mark song as played
-        this.markSongAsPlayed(this.currentSong.id);
+        console.log(`🎵 Starting from first song: ${this.currentSong.name}`);
+    },
+    
+    // Load next song in sequence
+    loadNextSong: function() {
+        // Increment indeks
+        this.currentSongIndex++;
+        
+        // Jika sudah di akhir array, kembali ke awal
+        if (this.currentSongIndex >= this.songs.length) {
+            this.currentSongIndex = 0;
+        }
+        
+        // Load lagu berikutnya
+        this.currentSong = this.songs[this.currentSongIndex];
+        this.audioPlayer.src = this.currentSong.path;
+        this.currentTime = 0;
+        this.audioPlayer.currentTime = 0;
+        
+        console.log(`🎵 Next song loaded: ${this.currentSong.name} (${this.currentSongIndex + 1}/${this.songs.length})`);
     },
     
     // Create music control button (tanpa slider volume)
@@ -176,30 +161,6 @@ const MUSIC_PLAYER = {
         }
     },
     
-    // Get played songs from localStorage
-    getPlayedSongsFromStorage: function() {
-        try {
-            const playedSongs = localStorage.getItem('played_songs');
-            return playedSongs ? JSON.parse(playedSongs) : [];
-        } catch (e) {
-            console.error('Error reading played songs:', e);
-            return [];
-        }
-    },
-    
-    // Mark song as played
-    markSongAsPlayed: function(songId) {
-        try {
-            let playedSongs = this.getPlayedSongsFromStorage();
-            if (!playedSongs.includes(songId)) {
-                playedSongs.push(songId);
-                localStorage.setItem('played_songs', JSON.stringify(playedSongs));
-            }
-        } catch (e) {
-            console.error('Error saving played song:', e);
-        }
-    },
-    
     // Load state from localStorage
     loadFromStorage: function() {
         try {
@@ -236,6 +197,7 @@ const MUSIC_PLAYER = {
                 volume: this.volume,
                 currentSongId: this.currentSong ? this.currentSong.id : null,
                 currentTime: this.audioPlayer ? this.audioPlayer.currentTime : 0,
+                currentSongIndex: this.currentSongIndex,
                 timestamp: Date.now(),
                 lastUpdated: new Date().toISOString()
             };
@@ -418,8 +380,8 @@ const MUSIC_PLAYER = {
         // Save current time sebelum pindah lagu
         this.saveCurrentTime();
         
-        // Load new song
-        this.loadRandomSong();
+        // Load next song in sequence
+        this.loadNextSong();
         
         // Play jika tidak muted
         if (this.isPlaying && !this.isMuted) {
@@ -434,9 +396,9 @@ const MUSIC_PLAYER = {
     setupEventListeners: function() {
         if (!this.audioPlayer) return;
         
-        // When song ends, play next
+        // When song ends, play next song in sequence
         this.audioPlayer.addEventListener('ended', () => {
-            console.log('🎵 Song ended naturally, playing next...');
+            console.log('🎵 Song ended, playing next in sequence...');
             this.next();
         });
         
