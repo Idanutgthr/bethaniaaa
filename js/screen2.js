@@ -9,7 +9,12 @@ const SCREEN2_CONFIG = {
     chatQueue: [],
     isChatCompleted: false,
     isCharactersInitialized: false,
-    // Konfigurasi animasi idle baru
+    // Responsive settings
+    responsive: {
+        characterSpacing: 0.4, // 40% dari viewport width antara karakter
+        isMobile: window.innerWidth <= 768,
+        isSmallMobile: window.innerWidth <= 480
+    },
     idleAnimations: {
         characters: {
             minAmplitude: 5,
@@ -32,7 +37,11 @@ const SCREEN2_CONFIG = {
 
 // Initialize Screen 2
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('Screen 2 Initialized 💬');
+    console.log('Screen 2 Initialized 💬 - Responsive Mode');
+    
+    // Update responsive settings
+    SCREEN2_CONFIG.responsive.isMobile = window.innerWidth <= 768;
+    SCREEN2_CONFIG.responsive.isSmallMobile = window.innerWidth <= 480;
     
     // Elements
     const chatSound = document.getElementById('chatSound');
@@ -49,10 +58,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set config
     SCREEN2_CONFIG.chatSound = chatSound;
     
-    // ⚠️ SET KARAKTER KE STATE AWAL YANG TIDAK TERLIHAT
-    initializeCharacters();
+    // Inisialisasi karakter dengan posisi responsif
+    initializeCharactersResponsive();
     
-    // ⚠️ NONAKTIFKAN LET'S GO BUTTON AWALNYA
+    // Nonaktifkan Let's Go Button awal
     if (letsGoBtn) {
         letsGoBtn.style.pointerEvents = 'none';
         letsGoBtn.style.opacity = '0.5';
@@ -68,9 +77,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Setup chat container
     setupChatContainer();
     
-    // ⚠️ ANIMASI KARAKTER DIMULAI SETELAH SEMUA SIAP
+    // Animasi karakter masuk setelah delay
     setTimeout(() => {
-        animateCharactersEntry();
+        animateCharactersEntryResponsive();
     }, 300);
     
     // Event Listeners
@@ -87,87 +96,126 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize first chat setelah delay
     setTimeout(() => {
         showNextChat();
-    }, 1800); // ⚠️ TAMBAH DELAY AGAR KARAKTER SUDAH MASUK
+    }, 1800);
     
-    // ⚠️ FUNCTION UNTUK INISIALISASI KARAKTER
-    function initializeCharacters() {
+    // Resize handler untuk responsive adjustments
+    window.addEventListener('resize', handleResize);
+    
+    // ⚠️ FUNCTION UNTUK INISIALISASI KARAKTER RESPONSIF
+    function initializeCharactersResponsive() {
         const bethaChar = document.querySelector('.betha-character');
         const wildanChar = document.querySelector('.wildan-character');
+        const spacing = SCREEN2_CONFIG.responsive.characterSpacing;
         
         if (bethaChar) {
-            // Reset posisi awal - TIDAK TERLIHAT
+            // Hitung posisi berdasarkan viewport
+            const viewportWidth = window.innerWidth;
+            let offset = viewportWidth * (spacing / 2);
+            
+            // Adjust untuk mobile
+            if (SCREEN2_CONFIG.responsive.isMobile) {
+                offset = viewportWidth * (spacing * 0.35);
+            }
+            
+            if (SCREEN2_CONFIG.responsive.isSmallMobile) {
+                offset = viewportWidth * (spacing * 0.3);
+            }
+            
+            // Reset posisi awal
             bethaChar.style.opacity = '0';
-            bethaChar.style.transform = 'translateX(-100px) scale(0.9)';
-            bethaChar.style.transition = 'none'; // ⚠️ NO TRANSITION AWAL
+            bethaChar.style.transform = `translateX(-${offset}px) translateY(20px) scale(0.9)`;
+            bethaChar.style.transition = 'none';
+            
+            // Set left position secara dinamis
+            bethaChar.style.left = `calc(50% - ${offset}px)`;
         }
         
         if (wildanChar) {
+            const viewportWidth = window.innerWidth;
+            let offset = viewportWidth * (spacing / 2);
+            
+            if (SCREEN2_CONFIG.responsive.isMobile) {
+                offset = viewportWidth * (spacing * 0.35);
+            }
+            
+            if (SCREEN2_CONFIG.responsive.isSmallMobile) {
+                offset = viewportWidth * (spacing * 0.3);
+            }
+            
             wildanChar.style.opacity = '0';
-            wildanChar.style.transform = 'translateX(100px) scale(0.9)';
+            wildanChar.style.transform = `translateX(${offset}px) translateY(20px) scale(0.9)`;
             wildanChar.style.transition = 'none';
+            
+            wildanChar.style.right = `calc(50% - ${offset}px)`;
         }
     }
     
-    // ⚠️ FUNCTION ANIMASI MASUK KARAKTER
-    function animateCharactersEntry() {
+    // ⚠️ FUNCTION ANIMASI MASUK KARAKTER RESPONSIF
+    function animateCharactersEntryResponsive() {
         const bethaChar = document.querySelector('.betha-character');
         const wildanChar = document.querySelector('.wildan-character');
         
         if (bethaChar) {
-            // Reset CSS animation pertama
+            // Reset CSS animation
             bethaChar.style.animation = 'none';
-            
-            // Force reflow
             void bethaChar.offsetWidth;
             
-            // Apply transition
-            bethaChar.style.transition = 'all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+            // Apply transition dengan timing yang responsif
+            const transitionTime = SCREEN2_CONFIG.responsive.isSmallMobile ? '0.8s' : '1.2s';
+            bethaChar.style.transition = `all ${transitionTime} cubic-bezier(0.34, 1.56, 0.64, 1)`;
             
             // Animate masuk
             setTimeout(() => {
                 bethaChar.style.opacity = '1';
-                bethaChar.style.transform = 'translateX(0) scale(1)';
+                bethaChar.style.transform = 'translateX(0) translateY(0) scale(1)';
                 
-                // Setelah animasi utama selesai, tambahkan animasi idle
+                // Tambahkan animasi idle
                 setTimeout(() => {
                     applyCharacterIdleAnimation(bethaChar, 'betha');
-                    bethaChar.style.transition = 'none'; // Hapus transition untuk animasi idle
-                }, 1200);
+                    bethaChar.style.transition = 'none';
+                }, parseInt(transitionTime) * 1000);
             }, 100);
         }
         
         if (wildanChar) {
-            // Wildan masuk dengan delay
+            // Wildan masuk dengan delay yang responsif
+            const delay = SCREEN2_CONFIG.responsive.isSmallMobile ? 300 : 500;
+            
             setTimeout(() => {
                 wildanChar.style.animation = 'none';
                 void wildanChar.offsetWidth;
                 
-                wildanChar.style.transition = 'all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1)';
+                const transitionTime = SCREEN2_CONFIG.responsive.isSmallMobile ? '0.8s' : '1.2s';
+                wildanChar.style.transition = `all ${transitionTime} cubic-bezier(0.34, 1.56, 0.64, 1)`;
                 
                 setTimeout(() => {
                     wildanChar.style.opacity = '1';
-                    wildanChar.style.transform = 'translateX(0) scale(1)';
+                    wildanChar.style.transform = 'translateX(0) translateY(0) scale(1)';
                     
                     setTimeout(() => {
                         applyCharacterIdleAnimation(wildanChar, 'wildan');
                         wildanChar.style.transition = 'none';
                         
-                        // ⚠️ SET FLAG KARAKTER SUDAH SIAP
+                        // Set flag karakter sudah siap
                         SCREEN2_CONFIG.isCharactersInitialized = true;
-                    }, 1200);
+                    }, parseInt(transitionTime) * 1000);
                 }, 100);
-            }, 500); // Wildan delay 0.5 detik
+            }, delay);
         }
     }
     
-    // ⚠️ FUNCTION UNTUK ANIMASI IDLE KARAKTER
+    // ⚠️ FUNCTION UNTUK ANIMASI IDLE KARAKTER (TIDAK BERUBAH)
     function applyCharacterIdleAnimation(characterElement, characterName) {
         const config = SCREEN2_CONFIG.idleAnimations.characters;
         
-        // Buat animasi unik untuk setiap karakter
-        const amplitude = (characterName === 'betha') ? 
+        // Adjust amplitude untuk mobile
+        let amplitude = (characterName === 'betha') ? 
             config.minAmplitude + Math.random() * (config.maxAmplitude - config.minAmplitude) :
             config.minAmplitude + Math.random() * (config.maxAmplitude - config.minAmplitude);
+        
+        if (SCREEN2_CONFIG.responsive.isSmallMobile) {
+            amplitude *= 0.7; // Kurangi amplitude di mobile kecil
+        }
         
         const duration = config.minDuration + Math.random() * (config.maxDuration - config.minDuration);
         const delay = config.minDelay + Math.random() * (config.maxDelay - config.minDelay);
@@ -211,14 +259,20 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // ⚠️ FUNCTION UNTUK ANIMASI IDLE CHAT BUBBLE
+    // ⚠️ FUNCTION UNTUK ANIMASI IDLE CHAT BUBBLE RESPONSIF
     function applyChatBubbleIdleAnimation(chatBubble, index) {
         const config = SCREEN2_CONFIG.idleAnimations.chatBubbles;
         
-        // Setiap chat bubble mendapatkan animasi yang sedikit berbeda
-        const amplitude = config.minAmplitude + Math.random() * (config.maxAmplitude - config.minAmplitude);
+        // Adjust untuk mobile
+        let amplitude = config.minAmplitude + Math.random() * (config.maxAmplitude - config.minAmplitude);
+        if (SCREEN2_CONFIG.responsive.isSmallMobile) {
+            amplitude *= 0.6;
+        } else if (SCREEN2_CONFIG.responsive.isMobile) {
+            amplitude *= 0.8;
+        }
+        
         const duration = config.minDuration + Math.random() * (config.maxDuration - config.minDuration);
-        const delay = index * 0.3; // Staggered delay berdasarkan index
+        const delay = index * 0.3;
         
         // Buat animasi unik untuk chat bubble ini
         const animationName = `chatIdle_${index}_${Date.now()}`;
@@ -259,7 +313,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function createFloatingEmojis() {
         const emojis = ['❤️', '💖', '💕', '💗', '💓', '✨', '🌟', '💫', '🌸', '💌'];
         
-        for (let i = 0; i < 15; i++) {
+        // Jumlah emoji berdasarkan ukuran layar
+        const emojiCount = SCREEN2_CONFIG.responsive.isSmallMobile ? 10 : 15;
+        
+        for (let i = 0; i < emojiCount; i++) {
             setTimeout(() => {
                 createFloatingEmoji();
             }, i * 300);
@@ -272,9 +329,9 @@ document.addEventListener('DOMContentLoaded', function() {
             emoji.className = 'floating-emoji';
             emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
             emoji.style.left = Math.random() * 100 + 'vw';
-            emoji.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            emoji.style.fontSize = (Math.random() * 15 + 10) + 'px';
             
-            const duration = Math.random() * 8 + 4;
+            const duration = Math.random() * 6 + 3;
             const delay = Math.random() * 2;
             
             emoji.style.animation = `floatUp ${duration}s linear ${delay}s forwards`;
@@ -364,7 +421,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
         }
         
-        // ⚠️ CEK APAKAH CHAT SUDAH SELESAI
         if (SCREEN2_CONFIG.isChatCompleted) {
             return;
         }
@@ -428,10 +484,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     setTimeout(() => {
                         SCREEN2_CONFIG.isTransitioning = false;
                         
-                        // Beri efek idle pada chat bubble yang aktif
                         const activeChatBubble = nextChat.querySelector('.chat-bubble');
                         if (activeChatBubble) {
-                            // Reset dulu, lalu berikan animasi idle baru
                             activeChatBubble.style.animation = 'none';
                             void activeChatBubble.offsetWidth;
                             applyChatBubbleIdleAnimation(activeChatBubble, index);
@@ -452,81 +506,67 @@ document.addEventListener('DOMContentLoaded', function() {
         document.removeEventListener('click', handleScreenClick);
         document.removeEventListener('touchstart', handleScreenClick);
         
-        // ⚠️ FADE OUT SEMUA ELEMEN SAAT CHAT TERAKHIR DIKLIK
         fadeOutAllElements();
     }
     
-    // ⚠️ FUNCTION UNTUK FADE OUT SEMUA ELEMEN (EYECATCHING)
+    // ⚠️ FUNCTION UNTUK FADE OUT SEMUA ELEMEN
     function fadeOutAllElements() {
-    // Animasi eyecatching: fade out dengan efek partikel
-    createFadeOutParticles();
-    
-    // Tambahkan efek blur dan scale pada seluruh container
-    screenContainer.style.transition = 'all 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-    screenContainer.style.filter = 'blur(10px)';
-    screenContainer.style.transform = 'scale(0.95)';
-    
-    // Fade out chat instruction dengan efek bounce
-    if (chatInstruction) {
-        chatInstruction.style.transition = 'all 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-        chatInstruction.style.opacity = '0';
-        chatInstruction.style.transform = 'translateY(-40px) scale(1.2)';
+        createFadeOutParticles();
         
-        setTimeout(() => {
-            chatInstruction.style.display = 'none';
-        }, 900);
-    }
-    
-    // Fade out chat container dengan efek spiral
-    chatContainer.style.transition = 'all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-    chatContainer.style.opacity = '0';
-    chatContainer.style.transform = 'translateY(60px) rotate(5deg) scale(0.9)';
-    
-    // ⚠️ ANIMASI KARAKTER KELUAR DENGAN EYECATCHING
-    animateCharactersExit();
-    
-    // Fade out floating emojis dengan efek yang menarik
-    floatingEmojisContainer.style.transition = 'all 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-    floatingEmojisContainer.style.opacity = '0';
-    floatingEmojisContainer.style.transform = 'scale(1.5)';
-    
-    // ⚠️ PERBAIKAN: Reset filter gradient background setelah animasi
-    gradientBackground.style.transition = 'all 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-    gradientBackground.style.opacity = '0.5';
-    gradientBackground.style.filter = 'blur(20px)';
-    
-    // Show Let's Go section setelah semua fade out selesai
-    setTimeout(() => {
-        // Sembunyikan elemen setelah fade out
-        chatContainer.style.display = 'none';
-        floatingEmojisContainer.style.display = 'none';
+        screenContainer.style.transition = 'all 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        screenContainer.style.filter = 'blur(10px)';
+        screenContainer.style.transform = 'scale(0.95)';
         
-        // ⚠️ PERBAIKAN: Reset filter container dan gradient sebelum show Let's Go
-        screenContainer.style.filter = 'blur(0)';
-        screenContainer.style.transform = 'scale(1)';
-        screenContainer.style.transition = 'all 0.8s ease 0.3s';
-        
-        // Reset gradient background ke kondisi normal
-        gradientBackground.style.opacity = '1';
-        gradientBackground.style.filter = 'blur(0)';
-        gradientBackground.style.transition = 'all 0.8s ease 0.3s';
-        
-        // Show Let's Go section dengan animasi eyecatching
-        if (letsGoSection) {
-            letsGoSection.style.opacity = '0';
-            letsGoSection.style.transform = 'translate(-50%, -50%) scale(0.8)';
-            letsGoSection.style.display = 'flex';
-            letsGoSection.style.transition = 'all 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s';
+        if (chatInstruction) {
+            chatInstruction.style.transition = 'all 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+            chatInstruction.style.opacity = '0';
+            chatInstruction.style.transform = 'translateY(-40px) scale(1.2)';
             
             setTimeout(() => {
-                letsGoSection.classList.add('show');
-                letsGoSection.style.opacity = '1';
-                letsGoSection.style.transform = 'translate(-50%, -50%) scale(1)';
-                
-            }, 50);
+                chatInstruction.style.display = 'none';
+            }, 900);
         }
         
-            // Aktifkan Let's Go button dengan animasi
+        chatContainer.style.transition = 'all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        chatContainer.style.opacity = '0';
+        chatContainer.style.transform = 'translateY(60px) rotate(5deg) scale(0.9)';
+        
+        animateCharactersExit();
+        
+        floatingEmojisContainer.style.transition = 'all 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        floatingEmojisContainer.style.opacity = '0';
+        floatingEmojisContainer.style.transform = 'scale(1.5)';
+        
+        gradientBackground.style.transition = 'all 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
+        gradientBackground.style.opacity = '0.5';
+        gradientBackground.style.filter = 'blur(20px)';
+        
+        setTimeout(() => {
+            chatContainer.style.display = 'none';
+            floatingEmojisContainer.style.display = 'none';
+            
+            screenContainer.style.filter = 'blur(0)';
+            screenContainer.style.transform = 'scale(1)';
+            screenContainer.style.transition = 'all 0.8s ease 0.3s';
+            
+            gradientBackground.style.opacity = '1';
+            gradientBackground.style.filter = 'blur(0)';
+            gradientBackground.style.transition = 'all 0.8s ease 0.3s';
+            
+            if (letsGoSection) {
+                letsGoSection.style.opacity = '0';
+                letsGoSection.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                letsGoSection.style.display = 'flex';
+                letsGoSection.style.transition = 'all 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s';
+                
+                setTimeout(() => {
+                    letsGoSection.classList.add('show');
+                    letsGoSection.style.opacity = '1';
+                    letsGoSection.style.transform = 'translate(-50%, -50%) scale(1)';
+                    
+                }, 50);
+            }
+            
             if (letsGoBtn) {
                 setTimeout(() => {
                     letsGoBtn.style.pointerEvents = 'auto';
@@ -539,7 +579,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 1200);
     }
     
-    // ⚠️ FUNCTION UNTUK MEMBUAT PARTIKEL FADE OUT EYECATCHING
+    // ⚠️ FUNCTION UNTUK MEMBUAT PARTIKEL FADE OUT
     function createFadeOutParticles() {
         const particlesContainer = document.createElement('div');
         particlesContainer.className = 'fade-out-particles';
@@ -555,13 +595,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const emojis = ['✨', '🌟', '💫', '🌸', '💖', '💕', '💗', '💓', '❤️', '💌'];
         const colors = ['#FF6B8B', '#FF8E53', '#FFCE53', '#6BFF8E', '#53B3FF', '#8E53FF'];
         
-        for (let i = 0; i < 30; i++) {
+        const particleCount = SCREEN2_CONFIG.responsive.isSmallMobile ? 20 : 30;
+        
+        for (let i = 0; i < particleCount; i++) {
             setTimeout(() => {
                 const particle = document.createElement('div');
                 particle.className = 'fade-particle';
                 particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
                 particle.style.position = 'absolute';
-                particle.style.fontSize = (Math.random() * 25 + 15) + 'px';
+                particle.style.fontSize = (Math.random() * 20 + 10) + 'px';
                 particle.style.color = colors[Math.floor(Math.random() * colors.length)];
                 particle.style.left = Math.random() * 100 + 'vw';
                 particle.style.top = Math.random() * 100 + 'vh';
@@ -570,7 +612,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 particlesContainer.appendChild(particle);
                 
-                // Animasi partikel
                 const angle = Math.random() * Math.PI * 2;
                 const distance = 100 + Math.random() * 200;
                 const duration = 0.8 + Math.random() * 0.5;
@@ -582,7 +623,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0.2)`;
                 }, 10);
                 
-                // Hapus partikel setelah animasi selesai
                 setTimeout(() => {
                     if (particle.parentNode) {
                         particle.remove();
@@ -591,7 +631,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, i * 30);
         }
         
-        // Hapus container partikel setelah semua animasi selesai
         setTimeout(() => {
             if (particlesContainer.parentNode) {
                 particlesContainer.remove();
@@ -599,7 +638,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 2000);
     }
     
-    // ⚠️ FUNCTION ANIMASI KARAKTER KELUAR DENGAN EYECATCHING
+    // ⚠️ FUNCTION ANIMASI KARAKTER KELUAR
     function animateCharactersExit() {
         const bethaChar = document.querySelector('.betha-character');
         const wildanChar = document.querySelector('.wildan-character');
@@ -625,7 +664,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     wildanChar.style.transform = 'translateY(-80px) translateX(50px) rotate(15deg) scale(1.2)';
                     wildanChar.style.filter = 'blur(10px)';
                 }, 100);
-            }, 300); // Wildan keluar lebih lambat dengan delay
+            }, 300);
         }
     }
     
@@ -633,21 +672,17 @@ document.addEventListener('DOMContentLoaded', function() {
     function animateLetsGoSectionFadeOut() {
         console.log('Animating Let\'s Go section fade out');
         
-        // Hentikan semua animasi yang sedang berjalan
         screenContainer.style.animation = 'none';
         letsGoSection.style.animation = 'none';
         letsGoBtn.style.animation = 'none';
         
-        // Buat efek partikel untuk transisi
         createTransitionParticles();
         
-        // Animasi eyecatching untuk Let's Go button
         letsGoBtn.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
         letsGoBtn.style.transform = 'scale(1.5) rotate(360deg)';
         letsGoBtn.style.opacity = '0';
         letsGoBtn.style.filter = 'blur(20px)';
         
-        // Animasi untuk title container
         const titleContainer = document.querySelector('.title-container');
         if (titleContainer) {
             titleContainer.style.transition = 'all 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.1s';
@@ -655,23 +690,19 @@ document.addEventListener('DOMContentLoaded', function() {
             titleContainer.style.opacity = '0';
         }
         
-        // Animasi untuk seluruh Let's Go section
         letsGoSection.style.transition = 'all 1s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
         letsGoSection.style.transform = 'translate(-50%, -50%) scale(1.5)';
         letsGoSection.style.opacity = '0';
         letsGoSection.style.filter = 'blur(30px)';
         
-        // Animasi untuk gradient background
         gradientBackground.style.transition = 'all 1.2s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
         gradientBackground.style.opacity = '0';
         gradientBackground.style.filter = 'blur(50px) brightness(2)';
         
-        // Animasi untuk watermark
         screenWatermark.style.transition = 'all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.2s';
         screenWatermark.style.opacity = '0';
         screenWatermark.style.transform = 'translateY(50px)';
         
-        // Navigate setelah semua animasi selesai
         setTimeout(() => {
             window.location.href = 'screen3.html';
         }, 1500);
@@ -693,13 +724,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const emojis = ['✨', '🌟', '💫', '🎉', '🎊', '🎈', '💖', '❤️', '💕', '💗'];
         const colors = ['#FF6B8B', '#FF8E53', '#FFCE53', '#6BFF8E', '#53B3FF', '#8E53FF', '#FF53B3', '#53FFCE'];
         
-        for (let i = 0; i < 50; i++) {
+        const particleCount = SCREEN2_CONFIG.responsive.isSmallMobile ? 30 : 50;
+        
+        for (let i = 0; i < particleCount; i++) {
             setTimeout(() => {
                 const particle = document.createElement('div');
                 particle.className = 'transition-particle';
                 particle.textContent = emojis[Math.floor(Math.random() * emojis.length)];
                 particle.style.position = 'absolute';
-                particle.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                particle.style.fontSize = (Math.random() * 25 + 15) + 'px';
                 particle.style.color = colors[Math.floor(Math.random() * colors.length)];
                 particle.style.left = '50%';
                 particle.style.top = '50%';
@@ -710,7 +743,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 particlesContainer.appendChild(particle);
                 
-                // Animasi partikel keluar dari tengah
                 const angle = Math.random() * Math.PI * 2;
                 const distance = 200 + Math.random() * 400;
                 const duration = 1 + Math.random() * 0.5;
@@ -723,7 +755,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px) scale(0.1) rotate(${angle * 180/Math.PI}deg)`;
                 }, 50);
                 
-                // Hapus partikel setelah animasi selesai
                 setTimeout(() => {
                     if (particle.parentNode) {
                         particle.remove();
@@ -732,7 +763,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }, i * 20);
         }
         
-        // Hapus container partikel setelah semua animasi selesai
         setTimeout(() => {
             if (particlesContainer.parentNode) {
                 particlesContainer.remove();
@@ -748,8 +778,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         
         SCREEN2_CONFIG.isTransitioning = true;
-        
-        // ⚠️ GUNAKAN ANIMASI EYECATCHING FADE OUT
         animateLetsGoSectionFadeOut();
     };
     
@@ -762,5 +790,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
         });
+    }
+    
+    // ⚠️ RESIZE HANDLER UNTUK RESPONSIVE ADJUSTMENTS
+    function handleResize() {
+        // Update responsive settings
+        SCREEN2_CONFIG.responsive.isMobile = window.innerWidth <= 768;
+        SCREEN2_CONFIG.responsive.isSmallMobile = window.innerWidth <= 480;
+        
+        // Jika karakter sudah terinisialisasi, update posisi mereka
+        if (SCREEN2_CONFIG.isCharactersInitialized) {
+            const bethaChar = document.querySelector('.betha-character');
+            const wildanChar = document.querySelector('.wildan-character');
+            const spacing = SCREEN2_CONFIG.responsive.characterSpacing;
+            
+            if (bethaChar) {
+                const viewportWidth = window.innerWidth;
+                let offset = viewportWidth * (spacing / 2);
+                
+                if (SCREEN2_CONFIG.responsive.isMobile) {
+                    offset = viewportWidth * (spacing * 0.35);
+                }
+                
+                if (SCREEN2_CONFIG.responsive.isSmallMobile) {
+                    offset = viewportWidth * (spacing * 0.3);
+                }
+                
+                bethaChar.style.left = `calc(50% - ${offset}px)`;
+            }
+            
+            if (wildanChar) {
+                const viewportWidth = window.innerWidth;
+                let offset = viewportWidth * (spacing / 2);
+                
+                if (SCREEN2_CONFIG.responsive.isMobile) {
+                    offset = viewportWidth * (spacing * 0.35);
+                }
+                
+                if (SCREEN2_CONFIG.responsive.isSmallMobile) {
+                    offset = viewportWidth * (spacing * 0.3);
+                }
+                
+                wildanChar.style.right = `calc(50% - ${offset}px)`;
+            }
+        }
     }
 });

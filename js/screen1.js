@@ -8,6 +8,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const screenContainer = document.querySelector('.screen1-container');
     const screenWatermark = document.querySelector('.screen-watermark');
     
+    // Cek apakah di perangkat mobile
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    
+    console.log(`Device: ${isMobile ? 'Mobile' : 'Desktop'}, Touch: ${isTouchDevice}`);
+    
     // Emoji list for floating animation
     const emojis = ['❤️', '💖', '💕', '😊', '😍', '🥰', '🌸', '🌺', '🌷', '💐', '🎀', '🧁', '🍰', '🎂', '🍭', '🍬', '🦋', '🐇', '🐰', '💝'];
     
@@ -132,6 +138,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Button click handler
     async function handleButtonClick() {
+        console.log('Button clicked');
+        
         // Play click sound
         if (clickSound) {
             clickSound.currentTime = 0;
@@ -144,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add click effect
         clickMeBtn.style.animation = 'none';
-        clickMeBtn.style.transform = 'scale(0.95)';
+        clickMeBtn.classList.add('active');
         
         // Create burst effect dengan warna palette
         createClickBurst();
@@ -264,6 +272,13 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
     document.head.appendChild(burstStyle);
     
+    // Fungsi untuk menangani tap pada mobile
+    function handleMobileTap(e) {
+        e.preventDefault();
+        console.log('Mobile tap detected');
+        handleButtonClick();
+    }
+    
     // Initialize
     function init() {
         // Start floating emojis
@@ -272,31 +287,62 @@ document.addEventListener('DOMContentLoaded', function() {
         // Add fade in animation saat halaman dimuat
         fadeInScreenElements();
         
-        // Add event listeners
-        clickMeBtn.addEventListener('click', handleButtonClick);
+        // Setup event listeners berdasarkan device
+        if (isTouchDevice) {
+            // Untuk touch devices (mobile)
+            console.log('Setting up touch events');
+            
+            // Gunakan event listener untuk touchstart
+            clickMeBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                console.log('Touch start on button');
+                this.classList.add('active');
+            }, { passive: false });
+            
+            // Gunakan touchend untuk trigger click
+            clickMeBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                console.log('Touch end on button');
+                this.classList.remove('active');
+                handleButtonClick();
+            }, { passive: false });
+            
+            // Juga tambahkan click listener sebagai fallback
+            clickMeBtn.addEventListener('click', handleButtonClick);
+            
+            // Tambahkan event listener untuk mencegah zoom pada double tap
+            document.addEventListener('touchmove', function(e) {
+                if (e.scale !== 1) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+        } else {
+            // Untuk desktop
+            console.log('Setting up mouse events');
+            
+            // Add event listeners untuk mouse
+            clickMeBtn.addEventListener('click', handleButtonClick);
+            
+            // Add hover effect
+            clickMeBtn.addEventListener('mouseenter', function() {
+                this.style.transform = 'scale(1.1)';
+            });
+            
+            clickMeBtn.addEventListener('mouseleave', function() {
+                this.style.transform = 'scale(1)';
+            });
+        }
         
-        // Add hover effect
-        clickMeBtn.addEventListener('mouseenter', function() {
-            this.style.transform = 'scale(1.1)';
-        });
+        // Pastikan button selalu bisa diklik
+        clickMeBtn.style.cursor = 'pointer';
+        clickMeBtn.style.userSelect = 'none';
+        clickMeBtn.style.webkitUserSelect = 'none';
         
-        clickMeBtn.addEventListener('mouseleave', function() {
-            this.style.transform = 'scale(1)';
-        });
-        
-        // Touch device support
-        clickMeBtn.addEventListener('touchstart', function(e) {
+        // Tambahkan event listener untuk mencegah konteks menu pada long press
+        clickMeBtn.addEventListener('contextmenu', function(e) {
             e.preventDefault();
-            this.style.transform = 'scale(0.95)';
+            return false;
         });
-        
-        clickMeBtn.addEventListener('touchend', function(e) {
-            e.preventDefault();
-            this.style.transform = 'scale(1)';
-        });
-        
-        // REMOVED AUTO-CLICK TIMEOUT
-        // Tidak ada timeout untuk auto-click
     }
     
     // Start everything
@@ -308,4 +354,11 @@ document.addEventListener('DOMContentLoaded', function() {
             handleButtonClick();
         }
     });
+    
+    // Debug: Log jika button tidak bisa diklik
+    setTimeout(() => {
+        const rect = clickMeBtn.getBoundingClientRect();
+        console.log(`Button position: x=${rect.x}, y=${rect.y}, width=${rect.width}, height=${rect.height}`);
+        console.log(`Button computed style:`, window.getComputedStyle(clickMeBtn));
+    }, 1000);
 });

@@ -18,6 +18,13 @@
     --color-shadow: rgba(0, 0, 0, 0.1);
     --color-glass-bg: rgba(255, 255, 255, 0.2);
     --color-glass-border: rgba(255, 255, 255, 0.3);
+    
+    /* Responsive sizing */
+    --character-size-base: min(140px, 15vw);
+    --character-name-size: clamp(0.85rem, 2vw, 1.2rem);
+    --chat-bubble-padding: clamp(15px, 3vw, 30px);
+    --title-font-size: clamp(1.4rem, 5vw, 2.8rem);
+    --button-font-size: clamp(1.2rem, 4vw, 2rem);
 }
 
 body {
@@ -26,6 +33,7 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
+    width: 100%;
 }
 
 /* ===== GRADIENT BACKGROUND ===== */
@@ -71,7 +79,7 @@ body {
 
 .floating-emoji {
     position: absolute;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 2vw, 1.5rem);
     opacity: 0;
     filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
     z-index: 2;
@@ -101,9 +109,10 @@ body {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: 20px;
+    padding: clamp(5px, 2vw, 20px);
     z-index: 3;
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1400px;
     margin: 0 auto;
     animation: screenFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
@@ -119,92 +128,51 @@ body {
     }
 }
 
-/* ===== CHARACTERS SECTION ===== */
+/* ===== CHARACTERS SECTION - RESPONSIF DENGAN FLEX ===== */
 .characters-section {
     position: relative;
-    height: 250px;
-    margin-bottom: 20px;
+    height: clamp(150px, 25vh, 250px);
+    margin-bottom: clamp(10px, 2vh, 20px);
     display: flex;
     justify-content: center;
     align-items: flex-end;
     overflow: visible;
+    width: 100%;
 }
 
-/* Character Styles */
+/* Character Styles dengan positioning dinamis */
 .character {
     position: absolute;
     bottom: 0;
     z-index: 10;
+    animation: none !important;
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+    transition: all 1.2s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
+/* Positioning dinamis berdasarkan viewport */
 .betha-character {
-    left: -250px;
-    animation: walkInLeft 1.5s cubic-bezier(0.4, 0, 0.2, 1) forwards,
-               floatCharacter 3s ease-in-out infinite 1.5s;
+    left: calc(50% - clamp(180px, 40vw, 250px));
 }
 
 .wildan-character {
-    right: -250px;
-    animation: walkInRight 1.5s cubic-bezier(0.4, 0, 0.2, 1) 0.5s forwards,
-               floatCharacter 3s ease-in-out infinite 2s;
+    right: calc(50% - clamp(180px, 40vw, 250px));
 }
 
-@keyframes walkInLeft {
-    0% {
-        left: -250px;
-        transform: translateY(20px) scale(0.9);
-        opacity: 0;
-    }
-    60% {
-        transform: translateY(-5px) scale(1.05);
-        opacity: 0.8;
-    }
-    100% {
-        left: 20%;
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes walkInRight {
-    0% {
-        right: -250px;
-        transform: translateY(20px) scale(0.9);
-        opacity: 0;
-    }
-    60% {
-        transform: translateY(-5px) scale(1.05);
-        opacity: 0.8;
-    }
-    100% {
-        right: 20%;
-        transform: translateY(0) scale(1);
-        opacity: 1;
-    }
-}
-
-@keyframes floatCharacter {
-    0%, 100% {
-        transform: translateY(0);
-    }
-    50% {
-        transform: translateY(-15px);
-    }
-}
-
-/* Nama Karakter dengan Background Transparan Aesthetic */
+/* Nama Karakter */
 .character-name {
     position: absolute;
-    top: -40px;
+    top: clamp(-35px, -5vh, -40px);
     left: 50%;
     transform: translateX(-50%);
     background: var(--color-glass-bg);
     backdrop-filter: blur(15px);
     color: var(--color-white);
-    padding: 10px 25px;
+    padding: clamp(6px, 1.5vw, 10px) clamp(15px, 3vw, 25px);
     border-radius: 25px;
     font-weight: 700;
-    font-size: 1.2rem;
+    font-size: var(--character-name-size);
     white-space: nowrap;
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
@@ -216,8 +184,9 @@ body {
 }
 
 .character-img {
-    width: 140px;
+    width: var(--character-size-base);
     height: auto;
+    max-width: 140px;
     filter: drop-shadow(0 8px 25px rgba(0, 0, 0, 0.15));
     transform-origin: bottom center;
 }
@@ -229,18 +198,19 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 400px;
+    min-height: clamp(300px, 40vh, 400px);
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: clamp(10px, 2vh, 20px);
+    width: 100%;
 }
 
 .chat-container {
     width: 95%;
-    max-width: 900px;
-    height: 380px;
+    max-width: min(900px, 95vw);
+    height: clamp(250px, 40vh, 380px);
     position: relative;
     overflow: visible;
-    margin-bottom: 20px;
+    margin-bottom: clamp(10px, 2vh, 20px);
 }
 
 /* Chat Message Styles */
@@ -251,11 +221,11 @@ body {
     height: 100%;
     display: flex;
     align-items: center;
-    gap: 30px;
+    gap: clamp(10px, 3vw, 30px);
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s ease;
-    padding: 0 10px;
+    padding: 0 clamp(5px, 2vw, 10px);
 }
 
 .chat-message.active {
@@ -263,7 +233,7 @@ body {
     pointer-events: auto;
 }
 
-/* SMOOTH ANIMASI CHAT */
+/* ANIMASI CHAT */
 .chat-message.you {
     transform: translateX(120%);
 }
@@ -348,11 +318,11 @@ body {
     }
 }
 
-/* Profile Photo dengan Background Transparan */
+/* Profile Photo */
 .profile-photo {
     flex-shrink: 0;
-    width: 110px;
-    height: 110px;
+    width: clamp(60px, 10vw, 110px);
+    height: clamp(60px, 10vw, 110px);
     border-radius: 50%;
     overflow: hidden;
     border: 3px solid var(--color-glass-border);
@@ -393,20 +363,20 @@ body {
     border-radius: 50%;
 }
 
-/* Chat Bubble dengan Background Transparan Aesthetic */
+/* Chat Bubble */
 .chat-bubble {
     flex: 1;
     background: var(--color-glass-bg);
     backdrop-filter: blur(20px);
-    border-radius: 30px;
-    padding: 30px;
+    border-radius: clamp(20px, 4vw, 30px);
+    padding: var(--chat-bubble-padding);
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.3),
         inset 0 -1px 0 rgba(0, 0, 0, 0.05);
     border: 2px solid var(--color-glass-border);
     position: relative;
-    min-height: 220px;
+    min-height: clamp(150px, 25vh, 220px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -424,7 +394,7 @@ body {
         rgba(253, 121, 121, 0.4), 
         rgba(255, 255, 255, 0.2), 
         rgba(253, 121, 121, 0.4));
-    border-radius: 32px;
+    border-radius: calc(clamp(20px, 4vw, 30px) + 2px);
     z-index: -1;
     animation: gradientBorder 3s ease infinite;
 }
@@ -437,34 +407,36 @@ body {
 /* Chat Image */
 .chat-image {
     max-width: 100%;
-    max-height: 200px;
+    max-height: clamp(130px, 25vh, 200px);
     border-radius: 15px;
     border: 2px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     object-fit: contain;
     background: rgba(255, 255, 255, 0.1);
-    padding: 10px;
+    padding: clamp(5px, 2vw, 10px);
 }
 
-/* Chat Instruction dengan Background Transparan */
+/* Chat Instruction */
 .chat-instruction {
     color: var(--color-white);
-    font-size: 1rem;
+    font-size: clamp(0.8rem, 2vw, 1rem);
     font-weight: 500;
     text-align: center;
-    padding: 12px 30px;
+    padding: clamp(8px, 2vw, 12px) clamp(15px, 4vw, 30px);
     background: var(--color-glass-bg);
     backdrop-filter: blur(15px);
     border-radius: 25px;
     border: 2px solid var(--color-glass-border);
     animation: gentlePulse 2s ease-in-out infinite;
-    margin-top: 0px;
-    margin-bottom: 20px;
+    margin-top: 0;
+    margin-bottom: clamp(10px, 2vh, 20px);
     box-shadow: 
         0 8px 32px rgba(0, 0, 0, 0.1),
         inset 0 1px 0 rgba(255, 255, 255, 0.3);
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
     transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    width: fit-content;
+    max-width: 90%;
 }
 
 .chat-instruction.hidden {
@@ -484,30 +456,30 @@ body {
     }
 }
 
-/* ===== LET'S GO SECTION - REVISI RESPONSIF ===== */
+/* ===== LET'S GO SECTION ===== */
 .lets-go-section {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) translateY(50px);
-    width: 90%; /* Lebih responsif */
-    max-width: 700px; /* Sedikit lebih besar */
-    min-width: 280px; /* Minimum width */
+    width: 90%;
+    max-width: min(700px, 95vw);
+    min-width: 280px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 0 15px; /* Padding responsif */
+    padding: 0 clamp(10px, 3vw, 15px);
     opacity: 0;
     z-index: 20;
     transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-    pointer-events: none; /* Nonaktif sampai muncul */
+    pointer-events: none;
 }
 
 .lets-go-section.show {
     opacity: 1;
     transform: translate(-50%, -50%);
-    pointer-events: auto; /* Aktifkan saat muncul */
+    pointer-events: auto;
 }
 
 .title-container {
@@ -515,8 +487,8 @@ body {
     backdrop-filter: blur(25px);
     -webkit-backdrop-filter: blur(25px);
     border-radius: 25px;
-    padding: 25px 30px; /* Padding responsif */
-    margin-bottom: 25px;
+    padding: clamp(15px, 4vw, 25px) clamp(20px, 5vw, 30px);
+    margin-bottom: clamp(15px, 3vh, 25px);
     border: 1.5px solid rgba(255, 255, 255, 0.25);
     width: 100%;
     text-align: center;
@@ -561,10 +533,10 @@ body {
 
 .adventure-title {
     font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2rem, 5vw, 2.8rem); /* Font responsif */
+    font-size: var(--title-font-size);
     color: var(--color-white);
     text-align: center;
-    letter-spacing: 2px;
+    letter-spacing: clamp(1px, 0.5vw, 2px);
     line-height: 1.3;
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.3),
@@ -575,7 +547,7 @@ body {
 .title-word {
     display: inline-block;
     animation: wordBounce 2s ease-in-out infinite;
-    margin: 0 5px;
+    margin: 0 clamp(2px, 1vw, 5px);
 }
 
 .title-word:nth-child(1) { animation-delay: 0s; }
@@ -599,15 +571,15 @@ body {
     );
     background-size: 400% 400%;
     border: none;
-    padding: 20px 40px; /* Padding responsif */
-    font-size: clamp(1.5rem, 4vw, 2rem); /* Font responsif */
+    padding: clamp(14px, 3vh, 20px) clamp(25px, 6vw, 40px);
+    font-size: var(--button-font-size);
     font-weight: 800;
     color: var(--color-white);
     border-radius: 50px;
     cursor: pointer;
     font-family: 'Fredoka One', cursive;
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: clamp(1px, 0.5vw, 2px);
     transition: all 0.3s;
     animation: 
         gradientShift 3s ease infinite,
@@ -618,9 +590,9 @@ body {
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
     overflow: hidden;
     position: relative;
-    min-width: 250px; /* Lebih responsif */
-    max-width: 400px; /* Batas maksimum */
-    width: 100%; /* Lebar penuh di container */
+    min-width: min(250px, 70vw);
+    max-width: 400px;
+    width: 100%;
     backdrop-filter: blur(10px);
     border: 2px solid rgba(255, 255, 255, 0.3);
 }
@@ -655,7 +627,7 @@ body {
     position: absolute;
     top: -8px;
     right: -8px;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 2vw, 1.5rem);
     animation: sparkle 1.5s infinite;
 }
 
@@ -667,12 +639,12 @@ body {
 /* ===== WATERMARK ===== */
 .screen-watermark {
     position: fixed;
-    bottom: 15px;
+    bottom: clamp(8px, 2vh, 15px);
     left: 0;
     width: 100%;
     text-align: center;
     font-family: 'Quicksand', sans-serif;
-    font-size: 1rem;
+    font-size: clamp(0.7rem, 2vw, 1rem);
     font-weight: 600;
     color: var(--color-white);
     padding: 5px;
@@ -684,347 +656,52 @@ body {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== RESPONSIVE DESIGN - REVISI LENGKAP ===== */
+/* ===== RESPONSIVE DESIGN - ORIENTATION BASED ===== */
 
-/* Tablet Landscape & Desktop Kecil */
-@media (max-width: 1024px) {
-    .chat-container {
-        width: 98%;
-        max-width: 850px;
-        height: 350px;
-    }
-    
-    .character-img {
-        width: 120px;
-    }
-    
-    .betha-character {
-        left: -200px;
-    }
-    
-    .wildan-character {
-        right: -200px;
-    }
-    
-    @keyframes walkInLeft {
-        0% { left: -200px; }
-        100% { left: 18%; }
-    }
-    
-    @keyframes walkInRight {
-        0% { right: -200px; }
-        100% { right: 18%; }
-    }
-    
-    .lets-go-section {
-        max-width: 600px;
-        width: 85%;
-    }
-    
-    .adventure-title {
-        font-size: clamp(1.8rem, 4vw, 2.4rem);
-    }
-    
-    .lets-go-btn {
-        padding: 18px 35px;
-        font-size: clamp(1.4rem, 3.5vw, 1.8rem);
-        min-width: 220px;
-    }
-}
-
-/* Tablet Portrait */
-@media (max-width: 768px) {
+/* Smartphone Portrait */
+@media (max-width: 480px) and (orientation: portrait) {
     .characters-section {
-        height: 200px;
-        margin-bottom: 15px;
-    }
-    
-    .character-img {
-        width: 100px;
+        height: clamp(130px, 22vh, 170px);
     }
     
     .betha-character {
-        left: -150px;
+        left: calc(50% - clamp(120px, 35vw, 150px)) !important;
     }
     
     .wildan-character {
-        right: -150px;
+        right: calc(50% - clamp(120px, 35vw, 150px)) !important;
     }
     
-    @keyframes walkInLeft {
-        0% { left: -150px; transform: translateY(20px) scale(0.9); opacity: 0; }
-        60% { transform: translateY(-5px) scale(1.05); opacity: 0.8; }
-        100% { left: 15%; transform: translateY(0) scale(1); opacity: 1; }
-    }
-    
-    @keyframes walkInRight {
-        0% { right: -150px; transform: translateY(20px) scale(0.9); opacity: 0; }
-        60% { transform: translateY(-5px) scale(1.05); opacity: 0.8; }
-        100% { right: 15%; transform: translateY(0) scale(1); opacity: 1; }
-    }
-    
-    .character-name {
-        font-size: 1rem;
-        padding: 8px 20px;
-        top: -35px;
-    }
-    
-    .chat-container {
-        height: 320px;
-        width: 100%;
-    }
-    
-    .chat-message {
-        gap: 20px;
-        padding: 0 5px;
-    }
-    
-    .profile-photo {
-        width: 90px;
-        height: 90px;
-    }
-    
-    .chat-bubble {
-        padding: 25px;
-        min-height: 200px;
-        border-radius: 25px;
-    }
-    
-    .chat-image {
-        max-height: 180px;
-    }
-    
-    /* Let's Go Section - Tablet */
-    .lets-go-section {
-        max-width: 500px;
-        width: 90%;
-        padding: 0 10px;
-    }
-    
-    .title-container {
-        padding: 20px 25px;
-        margin-bottom: 20px;
-        backdrop-filter: blur(20px);
+    .character-img {
+        width: clamp(70px, 12vw, 90px);
     }
     
     .adventure-title {
-        font-size: clamp(1.6rem, 4vw, 2rem);
-        letter-spacing: 1.5px;
+        font-size: clamp(1.2rem, 6vw, 1.8rem);
     }
     
     .title-word {
-        margin: 0 3px;
-    }
-    
-    .lets-go-btn {
-        padding: 16px 30px;
-        font-size: clamp(1.3rem, 3vw, 1.6rem);
-        min-width: 200px;
-        letter-spacing: 1.5px;
-    }
-    
-    .screen-watermark {
-        font-size: 0.9rem;
-        bottom: 12px;
+        margin: 0 2px;
     }
 }
 
-/* Smartphone (Portrait) */
-@media (max-width: 480px) {
-    .screen2-container {
-        padding: 10px;
-    }
-    
+/* Smartphone Landscape */
+@media (max-width: 896px) and (orientation: landscape) {
     .characters-section {
-        height: 170px;
-        margin-bottom: 15px;
+        height: clamp(100px, 20vh, 140px);
+        margin-bottom: clamp(5px, 1.5vh, 10px);
     }
     
-    .character-img {
-        width: 80px;
-    }
-    
-    .betha-character {
-        left: -100px;
-    }
-    
-    .wildan-character {
-        right: -100px;
-    }
-    
-    @keyframes walkInLeft {
-        0% { left: -100px; transform: translateY(20px) scale(0.9); opacity: 0; }
-        60% { transform: translateY(-5px) scale(1.05); opacity: 0.8; }
-        100% { left: 10%; transform: translateY(0) scale(1); opacity: 1; }
-    }
-    
-    @keyframes walkInRight {
-        0% { right: -100px; transform: translateY(20px) scale(0.9); opacity: 0; }
-        60% { transform: translateY(-5px) scale(1.05); opacity: 0.8; }
-        100% { right: 10%; transform: translateY(0) scale(1); opacity: 1; }
-    }
-    
-    .character-name {
-        font-size: 0.85rem;
-        padding: 6px 15px;
-        top: -30px;
+    .chat-section {
+        min-height: clamp(200px, 35vh, 280px);
     }
     
     .chat-container {
-        height: 280px;
-        margin-bottom: 15px;
+        height: clamp(180px, 32vh, 230px);
     }
     
-    .chat-message {
-        gap: 15px;
-        padding: 0;
-    }
-    
-    .profile-photo {
-        width: 70px;
-        height: 70px;
-    }
-    
-    .chat-bubble {
-        padding: 20px;
-        min-height: 170px;
-        border-radius: 20px;
-    }
-    
-    .chat-image {
-        max-height: 150px;
-    }
-    
-    .chat-instruction {
-        font-size: 0.9rem;
-        padding: 10px 20px;
-        margin-bottom: 15px;
-    }
-    
-    /* Let's Go Section - Smartphone */
     .lets-go-section {
-        max-width: 320px;
-        width: 95%;
-        padding: 0 10px;
-    }
-    
-    .title-container {
-        padding: 15px 20px;
-        margin-bottom: 15px;
-        backdrop-filter: blur(15px);
-    }
-    
-    .adventure-title {
-        font-size: clamp(1.4rem, 5vw, 1.8rem);
-        letter-spacing: 1px;
-        line-height: 1.2;
-    }
-    
-    .title-word {
-        display: block;
-        margin: 3px 0;
-        animation: wordBounceMobile 2s ease-in-out infinite;
-    }
-    
-    .title-word:nth-child(1) { animation-delay: 0s; }
-    .title-word:nth-child(2) { animation-delay: 0.2s; }
-    .title-word:nth-child(3) { animation-delay: 0.4s; }
-    .title-word:nth-child(4) { animation-delay: 0.6s; }
-    
-    @keyframes wordBounceMobile {
-        0%, 100% { transform: translateX(0) translateY(0); }
-        50% { transform: translateX(5px) translateY(-5px); }
-    }
-    
-    .lets-go-btn {
-        padding: 14px 25px;
-        font-size: clamp(1.2rem, 3.5vw, 1.5rem);
-        min-width: 180px;
-        letter-spacing: 1px;
-        width: 90%;
-    }
-    
-    .btn-sparkle {
-        font-size: 1.2rem;
-        top: -5px;
-        right: -5px;
-    }
-    
-    .screen-watermark {
-        font-size: 0.8rem;
-        bottom: 10px;
-        padding: 3px;
-    }
-}
-
-/* Smartphone Sangat Kecil */
-@media (max-width: 360px) {
-    .lets-go-section {
-        max-width: 280px;
-        width: 95%;
-    }
-    
-    .title-container {
-        padding: 12px 15px;
-        margin-bottom: 12px;
-    }
-    
-    .adventure-title {
-        font-size: 1.3rem;
-    }
-    
-    .lets-go-btn {
-        padding: 12px 20px;
-        font-size: 1.1rem;
-        min-width: 160px;
-    }
-    
-    .btn-sparkle {
-        font-size: 1rem;
-    }
-}
-
-/* Landscape mode */
-@media (max-height: 600px) and (orientation: landscape) {
-    .characters-section {
-        height: 140px;
-        margin-bottom: 10px;
-    }
-    
-    .character-img {
-        width: 70px;
-    }
-    
-    .character-name {
-        font-size: 0.8rem;
-        top: -25px;
-        padding: 5px 12px;
-    }
-    
-    .chat-container {
-        height: 230px;
-        margin-bottom: 10px;
-    }
-    
-    .profile-photo {
-        width: 60px;
-        height: 60px;
-    }
-    
-    .chat-bubble {
-        min-height: 150px;
-        padding: 15px;
-    }
-    
-    .chat-image {
-        max-height: 130px;
-    }
-    
-    /* Let's Go Section - Landscape */
-    .lets-go-section {
-        max-width: 500px;
         transform: translate(-50%, -45%) translateY(50px);
-        padding: 0 15px;
     }
     
     .lets-go-section.show {
@@ -1032,108 +709,111 @@ body {
     }
     
     .title-container {
-        padding: 15px 20px;
-        margin-bottom: 15px;
-    }
-    
-    .adventure-title {
-        font-size: clamp(1.4rem, 3vw, 1.8rem);
-    }
-    
-    .lets-go-btn {
-        padding: 12px 25px;
-        font-size: clamp(1.2rem, 2.5vw, 1.4rem);
-        min-width: 180px;
+        padding: clamp(10px, 2vh, 15px) clamp(15px, 3vw, 20px);
+        margin-bottom: clamp(10px, 2vh, 15px);
     }
 }
 
-/* iPhone X/11/12 Pro Landscape */
-@media (max-height: 400px) and (orientation: landscape) {
-    .lets-go-section {
-        transform: translate(-50%, -40%) translateY(50px);
-        max-width: 450px;
+/* Tablet Portrait */
+@media (min-width: 481px) and (max-width: 768px) and (orientation: portrait) {
+    .character-img {
+        width: clamp(90px, 14vw, 110px);
     }
     
-    .lets-go-section.show {
-        transform: translate(-50%, -40%);
+    .chat-container {
+        height: clamp(280px, 38vh, 320px);
+    }
+    
+    .chat-bubble {
+        min-height: clamp(180px, 28vh, 200px);
+    }
+}
+
+/* Tablet Landscape */
+@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+    .characters-section {
+        height: clamp(180px, 23vh, 220px);
+    }
+    
+    .character-img {
+        width: clamp(100px, 13vw, 120px);
+    }
+    
+    .lets-go-section {
+        max-width: min(600px, 85vw);
+    }
+}
+
+/* Desktop - lebar sedang */
+@media (min-width: 1025px) and (max-width: 1440px) {
+    .screen2-container {
+        padding: clamp(15px, 2vw, 30px);
+    }
+    
+    .characters-section {
+        height: clamp(220px, 28vh, 250px);
+    }
+    
+    .character-img {
+        width: clamp(120px, 12vw, 140px);
+    }
+}
+
+/* Desktop besar */
+@media (min-width: 1441px) {
+    .screen2-container {
+        max-width: 1600px;
+    }
+    
+    .character-img {
+        width: 150px;
+    }
+    
+    .chat-container {
+        max-width: 1000px;
+        height: 400px;
+    }
+}
+
+/* Extra small devices (iPhone 5/SE) */
+@media (max-width: 320px) {
+    .lets-go-section {
+        min-width: 260px;
+        width: 95%;
+    }
+    
+    .lets-go-btn {
+        min-width: 140px;
+        padding: 10px 18px;
+        font-size: 1.1rem;
     }
     
     .title-container {
-        padding: 10px 15px;
-        margin-bottom: 10px;
+        padding: 12px 15px;
+    }
+}
+
+/* Perangkat dengan tinggi sangat kecil */
+@media (max-height: 500px) {
+    .characters-section {
+        height: clamp(100px, 22vh, 120px);
     }
     
-    .adventure-title {
-        font-size: 1.3rem;
+    .character-name {
+        top: clamp(-25px, -6vh, -30px);
+        font-size: clamp(0.7rem, 1.8vh, 0.9rem);
     }
     
-    .lets-go-btn {
-        padding: 10px 20px;
-        font-size: 1.1rem;
-        min-width: 160px;
+    .chat-section {
+        min-height: clamp(220px, 45vh, 250px);
+    }
+    
+    .chat-container {
+        height: clamp(180px, 40vh, 200px);
     }
 }
 
-/* FIX UNTUK GLITCH KARAKTER */
-.characters-section {
-    position: relative;
-    height: 250px;
-    margin-bottom: 20px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-end;
-    overflow: visible;
-}
-
-.character {
-    position: absolute;
-    bottom: 0;
-    z-index: 10;
-    animation: none !important;
-    opacity: 0;
-    transform: translateY(20px) scale(0.9);
-}
-
-.betha-character {
-    left: 20% !important;
-    right: auto !important;
-}
-
-.wildan-character {
-    right: 20% !important;
-    left: auto !important;
-}
-
-@keyframes floatCharacter {
-    0%, 100% {
-        transform: translateY(0) translateX(0);
-    }
-    50% {
-        transform: translateY(-15px);
-    }
-}
-
-/* PREVENT FLICKER DURING PAGE LOAD */
-body {
-    opacity: 1 !important;
-    visibility: visible !important;
-    animation: none !important;
-}
-
-.screen2-container {
-    animation: screenFadeIn 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-}
-
-@keyframes screenFadeIn {
-    0% {
-        opacity: 0;
-    }
-    100% {
-        opacity: 1;
-    }
-}
-
-/* ANIMASI IDLE */
+/* ===== ANIMASI IDLE ===== */
 @keyframes gentleFloat {
     0%, 100% {
         transform: translateY(0) rotate(0deg);
@@ -1233,7 +913,7 @@ body {
     }
 }
 
-/* ANIMASI TAMBAHAN UNTUK EYECATCHING FADE OUT */
+/* ANIMASI TAMBAHAN */
 @keyframes buttonEntrance {
     0% {
         transform: scale(0.5) rotate(-180deg);
@@ -1249,21 +929,6 @@ body {
         transform: scale(1) rotate(0deg);
         opacity: 1;
         filter: blur(0);
-    }
-}
-
-/* Efek untuk partikel fade out */
-@keyframes particleExplode {
-    0% {
-        transform: translate(-50%, -50%) scale(0) rotate(0deg);
-        opacity: 1;
-    }
-    50% {
-        opacity: 1;
-    }
-    100% {
-        transform: translate(var(--tx), var(--ty)) scale(0.1) rotate(360deg);
-        opacity: 0;
     }
 }
 
@@ -1283,37 +948,32 @@ body {
     }
 }
 
-/* Style untuk partikel transisi */
-.transition-particle {
-    position: absolute;
-    font-size: 1.5rem;
-    pointer-events: none;
-    z-index: 10001;
-    will-change: transform, opacity;
-}
-
+/* Style untuk partikel */
+.transition-particle,
 .fade-particle {
     position: absolute;
-    font-size: 1.5rem;
+    font-size: clamp(1rem, 2vw, 1.5rem);
     pointer-events: none;
     z-index: 10000;
     will-change: transform, opacity;
 }
 
-/* Ensure no overflow issues */
-html, body {
-    overflow-x: hidden;
-    width: 100%;
+.fade-particle {
+    z-index: 10001;
 }
 
 /* Touch-friendly adjustments */
 @media (hover: none) and (pointer: coarse) {
     .lets-go-btn {
-        min-height: 50px; /* Minimum touch target size */
+        min-height: 44px; /* Minimum touch target size */
     }
     
     .chat-instruction {
-        padding: 15px 30px; /* Larger touch area */
+        padding: 12px 25px;
+    }
+    
+    .character-name {
+        padding: 8px 20px;
     }
 }
 
@@ -1322,5 +982,55 @@ html, body {
     .character-img {
         image-rendering: -webkit-optimize-contrast;
         image-rendering: crisp-edges;
+    }
+}
+
+/* Aksesibilitas - reduksi gerakan */
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Landscape dengan tinggi sangat rendah (iPhone X landscape) */
+@media (max-height: 375px) and (orientation: landscape) {
+    .characters-section {
+        height: clamp(80px, 25vh, 100px);
+        margin-bottom: 5px;
+    }
+    
+    .character-img {
+        width: clamp(60px, 10vw, 70px);
+    }
+    
+    .character-name {
+        top: clamp(-20px, -8vh, -25px);
+        font-size: 0.7rem;
+        padding: 4px 10px;
+    }
+    
+    .chat-section {
+        min-height: clamp(180px, 55vh, 200px);
+    }
+    
+    .chat-container {
+        height: clamp(150px, 50vh, 170px);
+    }
+    
+    .chat-bubble {
+        min-height: clamp(120px, 40vh, 140px);
+        padding: 10px;
+    }
+    
+    .lets-go-section {
+        transform: translate(-50%, -40%) translateY(30px);
+    }
+    
+    .lets-go-section.show {
+        transform: translate(-50%, -40%);
     }
 }
