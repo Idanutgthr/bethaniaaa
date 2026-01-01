@@ -105,6 +105,7 @@ body {
     max-width: 1400px;
     margin: 0 auto;
     animation: screenFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    padding-bottom: 180px; /* Tambahkan padding untuk tombol dan watermark */
 }
 
 @keyframes screenFadeIn {
@@ -122,7 +123,7 @@ body {
 .header-section {
     text-align: center;
     margin-bottom: 20px;
-    margin-top: 40px; /* ⭐ DITURUNKAN KEBAWAH */
+    margin-top: 40px;
     animation: headerSlideDown 1s ease-out 0.3s both;
 }
 
@@ -141,7 +142,7 @@ body {
     font-family: 'Dancing Script', cursive;
     font-size: 3.5rem;
     color: var(--color-white);
-    margin-bottom: 10px; /* ⭐ DIPERKECIL */
+    margin-bottom: 10px;
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.3),
         0 0 20px rgba(255, 255, 255, 0.2);
@@ -164,7 +165,7 @@ body {
 
 /* ⭐ HAPUS SUBTITLE "Click/Tap anywhere to continue" */
 .subtitle {
-    display: none; /* ⭐ DISEMBUNYIKAN */
+    display: none;
 }
 
 /* ===== PROGRESS INDICATOR ===== */
@@ -218,12 +219,13 @@ body {
     justify-content: center;
     position: relative;
     margin: 10px 0;
+    min-height: 50vh; /* Memastikan ada ruang untuk konten */
 }
 
 /* Media Item Styles - REVISI: POSISI TENGAH */
 .media-item {
     position: absolute;
-    top: 30%;
+    top: 40%; /* Diturunkan sedikit untuk memberi ruang */
     left: 50%;
     transform: translate(-50%, -50%);
     width: auto;
@@ -247,7 +249,7 @@ body {
     background: var(--color-glass-bg);
     backdrop-filter: blur(20px);
     border-radius: 25px;
-    padding: 25px; /* ⭐ KEMBALI KE 25px (dari 35px) */
+    padding: 25px;
     box-shadow: 
         0 25px 60px rgba(0, 0, 0, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.4),
@@ -566,13 +568,13 @@ body {
 
 /* ===== NAVIGATION HINT ===== */
 .navigation-hint {
-    display: none; /* ⭐ HAPUS STYLE LAMA */
+    display: none;
 }
 
-/* ===== NAVIGATION BUTTON BARU ===== */
+/* ===== NAVIGATION BUTTON BARU - FIXED POSITION ===== */
 .navigation-section {
     position: fixed;
-    bottom: 140px; /* ⭐ POSISI DI ATAS WATERMARK */
+    bottom: 100px; /* Jarak dari bawah */
     left: 0;
     width: 100%;
     text-align: center;
@@ -580,6 +582,7 @@ body {
     padding: 0 20px;
     box-sizing: border-box;
     animation: navSectionSlide 0.8s ease-out 1s both;
+    pointer-events: none; /* Biarkan tombol yang menerima klik */
 }
 
 @keyframes navSectionSlide {
@@ -631,6 +634,8 @@ body {
     align-items: center;
     justify-content: center;
     gap: 15px;
+    pointer-events: auto; /* Pastikan tombol bisa diklik */
+    margin: 0 auto;
 }
 
 @keyframes buttonFloat {
@@ -646,6 +651,11 @@ body {
             0 25px 60px rgba(253, 121, 121, 0.6),
             0 10px 30px rgba(0, 0, 0, 0.2);
     }
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
 .next-memory-btn:hover {
@@ -705,65 +715,6 @@ body {
 @keyframes glowSweep {
     0% { background-position: 200% 0; }
     100% { background-position: -200% 0; }
-}
-
-/* Watermark adjustment untuk button baru */
-.screen-watermark {
-    bottom: 25px; /* ⭐ TURUNKAN UNTUK SPASI DARI BUTTON */
-}
-
-@keyframes hintBounce {
-    0%, 100% { 
-        transform: translateY(0);
-        opacity: 0.9;
-    }
-    50% { 
-        transform: translateY(-10px);
-        opacity: 0.7;
-    }
-}
-
-.hint-content {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    background: var(--color-glass-bg);
-    backdrop-filter: blur(15px);
-    color: var(--color-white);
-    padding: 14px 28px;
-    border-radius: 30px;
-    border: 2px solid var(--color-glass-border);
-    font-size: 1rem;
-    font-weight: 600;
-    box-shadow: 
-        0 15px 35px rgba(0, 0, 0, 0.15),
-        inset 0 1px 0 rgba(255, 255, 255, 0.4);
-    max-width: 400px;
-    width: auto;
-    white-space: nowrap; /* ⭐ SATU BARIS SAJA */
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.hint-content i {
-    color: var(--color-pink-dark);
-    font-size: 1.4rem;
-    animation: handPoint 1.5s ease-in-out infinite;
-    flex-shrink: 0;
-}
-
-.hint-content span {
-    flex-shrink: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-@keyframes handPoint {
-    0%, 100% { transform: translateY(0) rotate(0); }
-    25% { transform: translateY(-5px) rotate(10deg); }
-    75% { transform: translateY(5px) rotate(-10deg); }
 }
 
 /* ===== END SECTION ===== */
@@ -873,11 +824,6 @@ body {
     border: 3px solid rgba(255, 255, 255, 0.3);
 }
 
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
-}
-
 @keyframes buttonPulse {
     0%, 100% { 
         transform: scale(1);
@@ -968,15 +914,10 @@ body {
     pointer-events: none;
 }
 
-@keyframes glowSweep {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
 /* ===== WATERMARK ===== */
 .screen-watermark {
     position: fixed;
-    bottom: 20px; /* ⭐ DITURUNKAN UNTUK SPASI */
+    bottom: 40px; /* Posisi tetap di bawah tombol */
     left: 0;
     width: 100%;
     text-align: center;
@@ -994,30 +935,12 @@ body {
 }
 
 /* ===== RESPONSIVE DESIGN ===== */
-@media (max-width: 1024px) {
-    .main-title {
-        font-size: 3rem;
-    }
-    
-    .photo-frame {
-        width: 380px;
-        height: 380px;
-    }
-    
-    .end-title {
-        font-size: 2.5rem;
-    }
-    
-    .end-button {
-        padding: 20px 45px;
-        font-size: 1.6rem;
-        min-width: 250px;
-    }
-}
 
+/* Tablet (768px ke bawah) */
 @media (max-width: 768px) {
     .screen3-container {
         padding: 15px;
+        padding-bottom: 160px;
     }
     
     .header-section {
@@ -1039,10 +962,6 @@ body {
         padding: 30px;
     }
     
-    .frame-corner {
-        font-size: 2rem;
-    }
-    
     .media-caption {
         font-size: 1rem;
         bottom: -45px;
@@ -1050,16 +969,35 @@ body {
         max-width: 280px;
     }
     
-    .navigation-hint {
+    /* Tombol untuk tablet */
+    .navigation-section {
         bottom: 90px;
+        padding: 0 15px;
     }
     
-    .hint-content {
-        padding: 12px 24px;
-        font-size: 0.95rem;
+    .next-memory-btn {
+        padding: 16px 35px;
+        font-size: 1.2rem;
+        min-width: 280px;
         max-width: 350px;
+        gap: 12px;
     }
     
+    .btn-text {
+        font-size: 1.1rem;
+    }
+    
+    .btn-icon {
+        font-size: 1.3rem;
+    }
+    
+    /* Watermark untuk tablet */
+    .screen-watermark {
+        bottom: 50px;
+        font-size: 0.9rem;
+    }
+    
+    /* End section untuk tablet */
     .end-content {
         padding: 30px 20px;
     }
@@ -1077,16 +1015,13 @@ body {
         font-size: 1.5rem;
         min-width: 220px;
     }
-    
-    .screen-watermark {
-        font-size: 0.9rem;
-        bottom: 15px;
-    }
 }
 
+/* HP (480px ke bawah) */
 @media (max-width: 480px) {
     .screen3-container {
         padding: 10px;
+        padding-bottom: 150px;
     }
     
     .header-section {
@@ -1109,24 +1044,6 @@ body {
         padding: 25px;
     }
     
-    .photo-frame::before,
-    .photo-frame::after {
-        font-size: 1.4rem;
-        letter-spacing: 10px;
-    }
-    
-    .photo-frame::before {
-        top: -20px;
-    }
-    
-    .photo-frame::after {
-        bottom: -20px;
-    }
-    
-    .frame-corner {
-        font-size: 1.6rem;
-    }
-    
     .media-caption {
         font-size: 0.9rem;
         bottom: -40px;
@@ -1134,20 +1051,37 @@ body {
         max-width: 240px;
     }
     
-    .navigation-hint {
+    /* Tombol untuk HP - POSISI TETAP */
+    .navigation-section {
         bottom: 80px;
+        padding: 0 10px;
     }
     
-    .hint-content {
-        padding: 10px 20px;
+    .next-memory-btn {
+        padding: 14px 25px;
+        font-size: 1.1rem;
+        min-width: 250px;
+        max-width: 320px;
+        gap: 10px;
+        letter-spacing: 0.5px;
+    }
+    
+    .btn-text {
+        font-size: 1rem;
+    }
+    
+    .btn-icon {
+        font-size: 1.2rem;
+    }
+    
+    /* Watermark untuk HP */
+    .screen-watermark {
+        bottom: 45px;
         font-size: 0.85rem;
-        max-width: 300px;
+        padding: 5px 10px;
     }
     
-    .hint-content span {
-        font-size: 0.8rem;
-    }
-    
+    /* End section untuk HP */
     .end-content {
         padding: 25px 15px;
         border-radius: 20px;
@@ -1168,71 +1102,58 @@ body {
         min-width: 200px;
         letter-spacing: 1px;
     }
-    
-    .screen-watermark {
-        font-size: 0.8rem;
-        bottom: 12px;
-    }
 }
 
-@media (max-width: 768px) {
+/* HP kecil (360px ke bawah) */
+@media (max-width: 360px) {
+    .screen3-container {
+        padding-bottom: 140px;
+    }
+    
+    .main-title {
+        font-size: 1.8rem;
+    }
+    
+    .photo-frame {
+        width: 250px;
+        height: 250px;
+        padding: 20px;
+    }
+    
+    /* Tombol untuk HP kecil */
     .navigation-section {
-        bottom: 80px;
+        bottom: 75px;
     }
     
     .next-memory-btn {
-        padding: 16px 35px;
-        font-size: 1.2rem;
-        min-width: 280px;
-        max-width: 350px;
-        gap: 12px;
-    }
-    
-    .btn-text {
-        font-size: 1.1rem;
-    }
-    
-    .btn-icon {
-        font-size: 1.3rem;
-    }
-    
-    .screen-watermark {
-        bottom: 20px;
-        font-size: 0.9rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .navigation-section {
-        bottom: 70px;
-        padding: 0 15px;
-    }
-    
-    .next-memory-btn {
-        padding: 14px 30px;
-        font-size: 1.1rem;
-        min-width: 250px;
-        max-width: 320px;
-        gap: 10px;
-        letter-spacing: 0.5px;
-    }
-    
-    .btn-text {
+        padding: 12px 20px;
         font-size: 1rem;
+        min-width: 220px;
+        max-width: 280px;
+        gap: 8px;
+    }
+    
+    .btn-text {
+        font-size: 0.95rem;
     }
     
     .btn-icon {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
     }
     
+    /* Watermark untuk HP kecil */
     .screen-watermark {
-        bottom: 18px;
+        bottom: 40px;
         font-size: 0.8rem;
     }
 }
 
-/* Landscape mode optimization */
+/* Mode landscape (tinggi kurang dari 700px) */
 @media (max-height: 700px) and (orientation: landscape) {
+    .screen3-container {
+        padding-bottom: 130px;
+    }
+    
     .header-section {
         margin-top: 20px;
         margin-bottom: 10px;
@@ -1249,45 +1170,15 @@ body {
         padding: 20px;
     }
     
-    .navigation-hint {
-        bottom: 70px;
-    }
-    
-    .hint-content {
-        padding: 8px 18px;
-        font-size: 0.85rem;
-    }
-    
     .media-caption {
         bottom: -35px;
         font-size: 0.9rem;
         padding: 6px 12px;
     }
     
-    .end-content {
-        padding: 20px 15px;
-    }
-    
-    .end-title {
-        font-size: 1.8rem;
-        margin-bottom: 15px;
-    }
-    
-    .end-message {
-        font-size: 1rem;
-        margin-bottom: 20px;
-    }
-    
-    .end-button {
-        padding: 12px 30px;
-        font-size: 1.2rem;
-        min-width: 180px;
-    }
-}
-
-@media (max-height: 700px) and (orientation: landscape) {
+    /* Tombol untuk landscape */
     .navigation-section {
-        bottom: 65px;
+        bottom: 70px;
     }
     
     .next-memory-btn {
@@ -1297,13 +1188,19 @@ body {
         max-width: 300px;
     }
     
+    /* Watermark untuk landscape */
     .screen-watermark {
-        bottom: 15px;
+        bottom: 40px;
+        font-size: 0.85rem;
     }
 }
 
-/* Very small height devices */
+/* Tinggi sangat kecil (kurang dari 600px) */
 @media (max-height: 600px) {
+    .screen3-container {
+        padding-bottom: 120px;
+    }
+    
     .header-section {
         margin-top: 15px;
     }
@@ -1317,23 +1214,28 @@ body {
         height: 250px;
     }
     
-    .navigation-hint {
+    /* Tombol untuk tinggi kecil */
+    .navigation-section {
         bottom: 65px;
     }
     
-    .hint-content {
-        padding: 6px 15px;
-        font-size: 0.8rem;
+    .next-memory-btn {
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        min-width: 200px;
+        max-width: 280px;
     }
     
+    /* Watermark untuk tinggi kecil */
     .screen-watermark {
-        font-size: 0.75rem;
-        bottom: 10px;
+        bottom: 35px;
+        font-size: 0.8rem;
     }
 }
 
-/* Ensure no overflow */
+/* Pastikan tidak ada overflow */
 html, body {
     overflow-x: hidden;
     width: 100%;
+    position: relative;
 }
