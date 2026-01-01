@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Our Beautiful Memories | For Bethania 💌</title>
+    <link rel="stylesheet" href="css/screen3.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Dancing+Script:wght@700&family=Fredoka+One&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background Gradient -->
+    <div class="gradient-background"></div>
+    
+    <!-- Floating Emojis Background -->
+    <div id="floating-emojis"></div>
+    
+    <!-- Main Container -->
+    <div class="screen3-container">
+        
+        <!-- Header Section -->
+        <div class="header-section">
+            <h1 class="main-title">
+                <span class="title-word">Our</span>
+                <span class="title-word">Beautiful</span>
+                <span class="title-word">Memories</span>
+            </h1>
+            
+            <div class="subtitle">
+                <i class="fas fa-heart"></i>
+                <span>Click/Tap anywhere to continue</span>
+                <i class="fas fa-heart"></i>
+            </div>
+            
+            <!-- Progress Indicator -->
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+                <div class="progress-text" id="progress-text">Memory 1 of <span id="total-items">0</span></div>
+            </div>
+        </div>
+        
+        <!-- Gallery Container -->
+        <div class="gallery-container">
+            <!-- Media akan dimuat secara dinamis -->
+        </div>
+        
+        <!-- Navigation Hint -->
+        <div class="navigation-section" id="nav-section">
+            <button class="next-memory-btn" id="next-memory-btn">
+                <span class="btn-text">Click To See Next Memory</span>
+                <div class="btn-icon">
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+                <div class="btn-glow"></div>
+            </button>
+        </div>
+        
+        <!-- End Memories Button (Hidden Awalnya) -->
+        <div class="end-section" id="end-section">
+            <div class="end-content">
+                <h2 class="end-title">
+                    <span class="end-word">Beautiful</span>
+                    <span class="end-word">Memories</span>
+                    <span class="end-word">Completed</span>
+                </h2>
+                
+                <p class="end-message">
+                    Every moment with you is a treasure I'll keep forever 💖
+                </p>
+                
+                <button class="end-button" id="end-button">
+                    <span class="button-text">End Memories</span>
+                    <div class="button-sparkles">
+                        <div class="sparkle">✨</div>
+                        <div class="sparkle">✨</div>
+                        <div class="sparkle">✨</div>
+                    </div>
+                    <div class="button-glow"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Watermark -->
+    <div class="screen-watermark">
+        This website is made specifically for Bethania
+    </div>
+    
+    <!-- Sound Effects -->
+    <audio id="photoSound" preload="auto">
+        <source src="assets/audio/photo_sound.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="videoSound" preload="auto">
+        <source src="assets/audio/video_sound.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script src="js/screen3.js"></script>
+    <script src="js/global.js"></script>
+    <link rel="stylesheet" href="css/music-control.css">
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Wildan & Betha's Adventures</title>
+    <link rel="stylesheet" href="css/screen2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Fredoka+One&family=Quicksand:wght@400;500;600;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Background dengan gradient sama seperti screen1 -->
+    <div class="gradient-background"></div>
+    
+    <!-- Floating Emoji Background -->
+    <div id="floating-emojis"></div>
+    
+    <!-- Main Container -->
+    <div class="screen2-container">
+        
+        <!-- Characters Section -->
+        <div class="characters-section">
+            <div class="character betha-character">
+                <div class="character-name">Betha</div>
+                <img src="assets/characters/betha.png" alt="Betha" class="character-img">
+            </div>
+            
+            <div class="character wildan-character">
+                <div class="character-name">Wildan</div>
+                <img src="assets/characters/wildan.png" alt="Wildan" class="character-img">
+            </div>
+            
+            <!-- Meeting Point tanpa love emoji -->
+            <div class="meeting-point">
+                <div class="sparkle"> </div>
+            </div>
+        </div>
+        
+        <!-- Chat Conversation Section -->
+        <div class="chat-section">
+            <div class="chat-container">
+                <!-- Chat akan dimuat secara dinamis -->
+            </div>
+            
+            <div class="chat-instruction">
+                <i class="fas fa-mouse-pointer"></i> Click/Tap anywhere to continue
+            </div>
+        </div>
+        
+        <!-- Let's Go Button (Hidden Awalnya) -->
+        <div class="lets-go-section">
+            <div class="title-container">
+                <h2 class="adventure-title">
+                    <span class="title-word">Wildan</span>
+                    <span class="title-word">and</span>
+                    <span class="title-word">Betha's</span>
+                    <span class="title-word">adventures</span>
+                </h2>
+            </div>
+            
+            <button class="lets-go-btn" onclick="goToScreen3()">
+                <span class="btn-text">Let's Go!</span>
+                <div class="btn-sparkle">✨</div>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Watermark -->
+    <div class="screen-watermark">
+        This website is made specifically for Bethania
+    </div>
+    
+    <!-- Audio -->
+    <audio id="chatSound" preload="auto">
+        <source src="assets/audio/chat_sound.mp3" type="audio/mpeg">
+    </audio>
+    
+    <script src="js/screen2.js"></script>
+    <script src="js/global.js"></script>
+    <link rel="stylesheet" href="css/music-control.css">
+</body>
+</html>
