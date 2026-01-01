@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Elements yang akan di-hide sebelum proposal
     const headerSection = document.querySelector('.header-section');
     const messageContainer = document.querySelector('.message-container');
-    const screenContainer = document.querySelector('.screen4-container');
+    const mainContent = document.querySelector('.main-content');
     
     // Initialize
     createFloatingEmojis();
@@ -63,6 +63,18 @@ document.addEventListener('DOMContentLoaded', function() {
                 showNextMessage();
             }
         }
+    });
+    
+    // Handle window resize
+    let resizeTimeout;
+    window.addEventListener('resize', function() {
+        clearTimeout(resizeTimeout);
+        resizeTimeout = setTimeout(function() {
+            // Update button positions jika perlu
+            if (SCREEN4_CONFIG.noButtonClickCount > 0) {
+                moveNoButtonWithinBounds();
+            }
+        }, 250);
     });
     
     // Initialize message content
@@ -94,10 +106,23 @@ document.addEventListener('DOMContentLoaded', function() {
     function setupMessageDots() {
         progressDots.innerHTML = '';
         
+        // Untuk mobile, batasi jumlah dots yang ditampilkan
+        const maxVisibleDots = window.innerWidth < 480 ? 6 : SCREEN4_CONFIG.totalMessages;
+        const startIndex = Math.max(0, SCREEN4_CONFIG.currentMessageIndex - Math.floor(maxVisibleDots/2));
+        const endIndex = Math.min(SCREEN4_CONFIG.totalMessages, startIndex + maxVisibleDots);
+        
         for (let i = 0; i < SCREEN4_CONFIG.totalMessages; i++) {
             const dot = document.createElement('div');
             dot.className = 'progress-dot';
-            if (i === 0) dot.classList.add('active');
+            if (i === SCREEN4_CONFIG.currentMessageIndex) {
+                dot.classList.add('active');
+            }
+            
+            // Untuk mobile, sembunyikan dots yang tidak perlu
+            if (window.innerWidth < 480 && (i < startIndex || i >= endIndex)) {
+                dot.style.display = 'none';
+            }
+            
             progressDots.appendChild(dot);
         }
     }
@@ -108,8 +133,18 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.progress-dot').forEach((dot, index) => {
             if (index === SCREEN4_CONFIG.currentMessageIndex) {
                 dot.classList.add('active');
+                dot.style.display = 'block';
             } else {
                 dot.classList.remove('active');
+                // Untuk mobile, sembunyikan dots yang jauh dari current
+                if (window.innerWidth < 480) {
+                    const diff = Math.abs(index - SCREEN4_CONFIG.currentMessageIndex);
+                    if (diff > 3) {
+                        dot.style.display = 'none';
+                    } else {
+                        dot.style.display = 'block';
+                    }
+                }
             }
         });
         
@@ -263,8 +298,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // Create confetti effect
             createConfetti();
             
-            // TIDAK ADA AUTO-REDIRECT - User tetap di celebration section
-            
             // Reset transition flag
             setTimeout(() => {
                 SCREEN4_CONFIG.isTransitioning = false;
@@ -272,7 +305,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 800);
     }
     
-    // Handle NO button click - DENGAN BATASAN AREA
+    // Handle NO button click - DENGAN BATASAN AREA YANG RESPONSIF
     function handleNoClick() {
         SCREEN4_CONFIG.noButtonClickCount++;
         
@@ -303,29 +336,29 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
     
-    // Move NO button dalam batasan yang wajar (tidak keluar layar)
+    // Move NO button dalam batasan yang responsif
     function moveNoButtonWithinBounds() {
-        const proposalButtons = document.querySelector('.proposal-buttons.horizontal-layout');
         const proposalContent = document.querySelector('.proposal-content');
         
-        if (!proposalButtons || !proposalContent) return;
+        if (!proposalContent) return;
         
         // Dapatkan dimensi container proposal
         const containerRect = proposalContent.getBoundingClientRect();
         const buttonRect = noBtn.getBoundingClientRect();
         
-        // Dapatkan dimensi viewport
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
+        // Hitung batas maksimal berdasarkan ukuran container
+        const maxX = containerRect.width - buttonRect.width - 20;
+        const maxY = containerRect.height - buttonRect.height - 20;
         
-        // Hitung batas maksimal yang wajar
-        // Tombol harus tetap dalam proposal content area
-        const maxX = containerRect.width - buttonRect.width - 30;
-        const maxY = containerRect.height - buttonRect.height - 30;
-        
-        // Pastikan minimal posisi
+        // Batas minimal
         const minX = 10;
         const minY = 10;
+        
+        // Pastikan batasan valid
+        if (maxX <= minX || maxY <= minY) {
+            // Jika container terlalu kecil, jangan pindahkan
+            return;
+        }
         
         // Generate random position dalam batasan
         const randomX = Math.random() * (maxX - minX) + minX;
@@ -354,13 +387,18 @@ document.addEventListener('DOMContentLoaded', function() {
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.8);
             color: white;
-            padding: 15px 25px;
-            border-radius: 25px;
+            padding: clamp(12px, 3vw, 18px) clamp(20px, 5vw, 30px);
+            border-radius: clamp(20px, 5vw, 30px);
             font-weight: bold;
             z-index: 1000;
             animation: fadeInOut 2s ease-in-out;
+            font-size: clamp(1rem, 3vw, 1.3rem);
+            text-align: center;
+            max-width: 80%;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
         `;
         
         document.body.appendChild(tempMsg);
@@ -373,15 +411,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create floating hearts for proposal section
     function createFloatingHearts() {
         const hearts = ['❤️', '💖', '💕', '💗', '💓', '💘'];
+        const heartCount = window.innerWidth < 768 ? 10 : 15;
         
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < heartCount; i++) {
             setTimeout(() => {
                 const heart = document.createElement('div');
                 heart.className = 'floating-heart';
                 heart.textContent = hearts[Math.floor(Math.random() * hearts.length)];
                 heart.style.cssText = `
                     position: fixed;
-                    font-size: 2rem;
+                    font-size: clamp(1.5rem, 4vw, 2.5rem);
                     z-index: 5;
                     pointer-events: none;
                     left: ${Math.random() * 100}vw;
@@ -400,7 +439,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Create confetti effect
     function createConfetti() {
-        const confettiCount = 100;
+        const confettiCount = window.innerWidth < 768 ? 70 : 100;
         const colors = ['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2', '#FF8BA0', '#A8E6CF'];
         
         for (let i = 0; i < confettiCount; i++) {
@@ -409,8 +448,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 confetti.className = 'confetti-piece';
                 confetti.style.cssText = `
                     position: fixed;
-                    width: 12px;
-                    height: 12px;
+                    width: clamp(8px, 2vw, 12px);
+                    height: clamp(8px, 2vw, 12px);
                     background: ${colors[Math.floor(Math.random() * colors.length)]};
                     top: -20px;
                     left: ${Math.random() * 100}vw;
@@ -445,14 +484,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Create floating emojis
     function createFloatingEmojis() {
         const emojis = ['❤️', '💖', '💕', '💗', '💓', '✨', '🌟', '💫', '🌸', '💌', '💘', '🥰', '😍', '💝'];
+        const initialCount = window.innerWidth < 768 ? 15 : 20;
+        const intervalTime = window.innerWidth < 768 ? 2000 : 1500;
         
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < initialCount; i++) {
             setTimeout(() => {
                 createFloatingEmoji();
             }, i * 200);
         }
         
-        setInterval(createFloatingEmoji, 1500);
+        setInterval(createFloatingEmoji, intervalTime);
         
         function createFloatingEmoji() {
             const emoji = document.createElement('div');
@@ -480,4 +521,40 @@ document.addEventListener('DOMContentLoaded', function() {
             }, (duration + delay) * 1000);
         }
     }
+    
+    // Add CSS for animations
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes floatHeartUp {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(720deg);
+                opacity: 0;
+            }
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.9); }
+            20%, 80% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .no-btn.shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes glowSweep {
+            0% { background-position: -200% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+    `;
+    document.head.appendChild(style);
 });

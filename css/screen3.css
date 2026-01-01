@@ -17,11 +17,6 @@
     --color-glass-bg: rgba(255, 255, 255, 0.2);
     --color-glass-border: rgba(255, 255, 255, 0.3);
     --color-shadow: rgba(0, 0, 0, 0.1);
-    
-    /* Responsive variables */
-    --frame-size: min(400px, 85vw, 85vh - 200px);
-    --font-scale: calc(100vw / 1400 * 16);
-    --padding-scale: calc(100vw / 1400 * 20);
 }
 
 body {
@@ -30,7 +25,6 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     position: relative;
-    font-size: clamp(14px, var(--font-scale), 18px);
 }
 
 /* ===== GRADIENT BACKGROUND ===== */
@@ -76,7 +70,7 @@ body {
 
 .floating-emoji {
     position: absolute;
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    font-size: 1.8rem;
     opacity: 0;
     filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
     z-index: 2;
@@ -100,19 +94,17 @@ body {
     }
 }
 
-/* ===== MAIN CONTAINER RESPONSIF ===== */
+/* ===== MAIN CONTAINER ===== */
 .screen3-container {
     position: relative;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    padding: clamp(10px, var(--padding-scale), 20px);
+    padding: 20px;
     z-index: 3;
     max-width: 1400px;
     margin: 0 auto;
-    width: 100%;
     animation: screenFadeIn 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-    overflow: visible !important;
 }
 
 @keyframes screenFadeIn {
@@ -126,13 +118,12 @@ body {
     }
 }
 
-/* ===== HEADER SECTION - PERBAIKAN POSISI ===== */
+/* ===== HEADER SECTION ===== */
 .header-section {
     text-align: center;
-    margin-bottom: clamp(8px, 1vh, 15px) !important; /* ⭐ DIPERKECIL MARGIN BAWAH */
-    margin-top: clamp(15px, 4vh, 40px) !important; /* ⭐ DITURUNKAN SEDIKIT DARI 60px */
+    margin-bottom: 20px;
+    margin-top: 40px; /* ⭐ DITURUNKAN KEBAWAH */
     animation: headerSlideDown 1s ease-out 0.3s both;
-    padding: 0 clamp(10px, 2vw, 20px);
 }
 
 @keyframes headerSlideDown {
@@ -148,20 +139,18 @@ body {
 
 .main-title {
     font-family: 'Dancing Script', cursive;
-    font-size: clamp(2rem, 8vw, 3.5rem);
+    font-size: 3.5rem;
     color: var(--color-white);
-    margin-bottom: clamp(8px, 1vh, 15px);
+    margin-bottom: 10px; /* ⭐ DIPERKECIL */
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.3),
         0 0 20px rgba(255, 255, 255, 0.2);
-    line-height: 1.2;
-    word-break: break-word;
 }
 
 .title-word {
     display: inline-block;
     animation: titleBounce 2s ease-in-out infinite;
-    margin: 0 clamp(5px, 1vw, 10px);
+    margin: 0 10px;
 }
 
 .title-word:nth-child(1) { animation-delay: 0s; }
@@ -175,24 +164,22 @@ body {
 
 /* ⭐ HAPUS SUBTITLE "Click/Tap anywhere to continue" */
 .subtitle {
-    display: none;
+    display: none; /* ⭐ DISEMBUNYIKAN */
 }
 
 /* ===== PROGRESS INDICATOR ===== */
 .progress-container {
-    max-width: min(500px, 90vw);
+    max-width: 500px;
     margin: 0 auto;
-    width: 100%;
-    padding: 0 clamp(10px, 3vw, 30px);
 }
 
 .progress-bar {
     width: 100%;
-    height: clamp(6px, 1vh, 10px);
+    height: 8px;
     background: rgba(255, 255, 255, 0.2);
     border-radius: 10px;
     overflow: hidden;
-    margin-bottom: clamp(8px, 1vh, 12px);
+    margin-bottom: 10px;
     box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -218,31 +205,25 @@ body {
 
 .progress-text {
     color: var(--color-white);
-    font-size: clamp(0.8rem, 2.5vw, 0.95rem);
+    font-size: 0.9rem;
     font-weight: 500;
     text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== REVISI POSISI GALLERY ===== */
-
-/* ===== GALLERY CONTAINER - POSISI LEBIH KE ATAS ===== */
+/* ===== GALLERY CONTAINER ===== */
 .gallery-container {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
-    margin: clamp(5px, 1vh, 15px) 0; /* ⭐ DIPERKECIL MARGIN */
-    min-height: min(450px, 65vh); /* ⭐ DIPERKECIL TINGGI MINIMAL */
-    padding: 0 clamp(10px, 3vw, 30px);
-    overflow: visible !important;
-    margin-top: -10px; /* ⭐ TAMBAHKAN NEGATIVE MARGIN UNTUK NAIK */
+    margin: 10px 0;
 }
 
-/* ⭐ REVISI: POSISI MEDIA ITEM LEBIH KE ATAS */
+/* Media Item Styles - REVISI: POSISI TENGAH */
 .media-item {
     position: absolute;
-    top: 45% !important; /* ⭐ DINAIKKAN DARI 50% KE 45% */
+    top: 30%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: auto;
@@ -253,8 +234,6 @@ body {
     opacity: 0;
     pointer-events: none;
     transition: opacity 0.5s ease;
-    max-width: 100%;
-    max-height: 100%;
 }
 
 .media-item.active {
@@ -262,26 +241,22 @@ body {
     pointer-events: auto;
 }
 
-/* ⭐ FRAME RESPONSIF DENGAN ASPECT RATIO 1:1 */
+/* ⭐ REVISI: BORDER FIXED SIZE 1:1 RATIO */
 .photo-frame {
     position: relative;
     background: var(--color-glass-bg);
     backdrop-filter: blur(20px);
-    border-radius: clamp(15px, 4vw, 25px);
-    padding: clamp(15px, 3vw, 25px);
+    border-radius: 25px;
+    padding: 25px; /* ⭐ KEMBALI KE 25px (dari 35px) */
     box-shadow: 
         0 25px 60px rgba(0, 0, 0, 0.2),
         inset 0 1px 0 rgba(255, 255, 255, 0.4),
         inset 0 -1px 0 rgba(0, 0, 0, 0.1);
-    border: clamp(2px, 0.8vw, 4px) solid var(--color-glass-border);
+    border: 4px solid var(--color-glass-border);
     
-    /* RESPONSIF SQUARE */
-    width: var(--frame-size);
-    height: var(--frame-size);
-    max-width: 400px;
-    max-height: 400px;
-    min-width: 200px;
-    min-height: 200px;
+    /* FIXED SQUARE SIZE */
+    width: 400px;
+    height: 400px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -324,12 +299,12 @@ body {
 
 /* Different Frame Styles */
 .photo-frame.type-1 {
-    border-radius: clamp(25px, 6vw, 40px);
+    border-radius: 40px;
     animation: frameFloat 4.2s ease-in-out infinite;
 }
 
 .photo-frame.type-2 {
-    border-radius: clamp(25px, 6vw, 50px) clamp(10px, 3vw, 20px) clamp(25px, 6vw, 50px) clamp(10px, 3vw, 20px);
+    border-radius: 50px 20px 50px 20px;
     animation: frameFloat 3.8s ease-in-out infinite 0.3s;
 }
 
@@ -339,7 +314,7 @@ body {
 }
 
 .photo-frame.type-4 {
-    border-radius: clamp(30px, 8vw, 60px) clamp(5px, 2vw, 10px) clamp(30px, 8vw, 60px) clamp(5px, 2vw, 10px);
+    border-radius: 60px 10px 60px 10px;
     animation: frameFloat 4s ease-in-out infinite 0.2s;
 }
 
@@ -348,10 +323,10 @@ body {
     animation: frameFloat 4.3s ease-in-out infinite 0.4s;
 }
 
-/* ⭐ MEDIA CONTENT RESPONSIF */
+/* ⭐ REVISI: MEDIA CONTENT CENTERED & PROPORTIONAL */
 .photo-content, .video-content {
     position: relative;
-    border-radius: clamp(10px, 2vw, 15px);
+    border-radius: 15px;
     overflow: hidden;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
     width: 100%;
@@ -366,7 +341,7 @@ body {
     max-width: 90%;
     max-height: 90%;
     object-fit: contain;
-    border-radius: clamp(8px, 1.5vw, 12px);
+    border-radius: 10px;
     display: block;
     margin: auto;
 }
@@ -375,19 +350,19 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
-    border-radius: clamp(8px, 1.5vw, 12px);
+    border-radius: 10px;
     display: block;
 }
 
-/* Video Controls Responsif */
+/* Video Controls */
 .video-controls {
     position: absolute;
-    bottom: clamp(10px, 2vw, 15px);
+    bottom: 15px;
     left: 0;
     right: 0;
     display: flex;
     justify-content: center;
-    gap: clamp(10px, 3vw, 20px);
+    gap: 20px;
     opacity: 0;
     transition: opacity 0.3s;
     z-index: 3;
@@ -401,14 +376,14 @@ body {
     background: rgba(0, 0, 0, 0.7);
     border: none;
     color: white;
-    width: clamp(35px, 8vw, 45px);
-    height: clamp(35px, 8vw, 45px);
+    width: 45px;
+    height: 45px;
     border-radius: 50%;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    font-size: 1.3rem;
     transition: all 0.3s;
     backdrop-filter: blur(5px);
 }
@@ -418,24 +393,24 @@ body {
     transform: scale(1.15);
 }
 
-/* Media Caption Responsif */
+/* Media Caption */
 .media-caption {
     position: absolute;
-    bottom: clamp(-30px, -3vh, -40px) !important; /* ⭐ DINAIKKAN (dari -50px) */
+    bottom: -50px;
     left: 0;
     right: 0;
     text-align: center;
     color: var(--color-white);
-    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
+    font-size: 1.1rem;
     font-weight: 600;
     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.4);
-    padding: clamp(8px, 2vw, 12px) clamp(15px, 3vw, 20px);
+    padding: 12px 20px;
     background: var(--color-glass-bg);
     backdrop-filter: blur(15px);
-    border-radius: clamp(15px, 4vw, 25px);
-    border: clamp(1px, 0.5vw, 2px) solid var(--color-glass-border);
+    border-radius: 25px;
+    border: 2px solid var(--color-glass-border);
     margin: 0 auto;
-    max-width: min(300px, 80vw);
+    max-width: 300px;
     animation: captionFloat 2.5s ease-in-out infinite;
     white-space: nowrap;
     overflow: hidden;
@@ -447,7 +422,7 @@ body {
     50% { transform: translateY(-8px); }
 }
 
-/* ===== ANIMATION CLASSES RESPONSIF ===== */
+/* ===== ANIMATION CLASSES ===== */
 .media-item.slide-in-left {
     animation: slideInLeft 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
@@ -484,26 +459,25 @@ body {
     animation: rotateIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
-/* ===== ANIMATION POSISI REVISI ===== */
 @keyframes slideInLeft {
     0% {
         opacity: 0;
-        transform: translate(-150%, -45%) rotate(-15deg) scale(0.8); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-150%, -50%) rotate(-15deg) scale(0.8);
     }
     100% {
         opacity: 1;
-        transform: translate(-50%, -45%) rotate(0) scale(1); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) rotate(0) scale(1);
     }
 }
 
 @keyframes slideInRight {
     0% {
         opacity: 0;
-        transform: translate(50%, -45%) rotate(15deg) scale(0.8); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(50%, -50%) rotate(15deg) scale(0.8);
     }
     100% {
         opacity: 1;
-        transform: translate(-50%, -45%) rotate(0) scale(1); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) rotate(0) scale(1);
     }
 }
 
@@ -514,36 +488,36 @@ body {
     }
     100% {
         opacity: 1;
-        transform: translate(-50%, -45%) scale(1); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) scale(1);
     }
 }
 
 @keyframes slideOutLeft {
     0% {
         opacity: 1;
-        transform: translate(-50%, -45%) rotate(0) scale(1); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) rotate(0) scale(1);
     }
     100% {
         opacity: 0;
-        transform: translate(-150%, -45%) rotate(-15deg) scale(0.8); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-150%, -50%) rotate(-15deg) scale(0.8);
     }
 }
 
 @keyframes slideOutRight {
     0% {
         opacity: 1;
-        transform: translate(-50%, -45%) rotate(0) scale(1); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) rotate(0) scale(1);
     }
     100% {
         opacity: 0;
-        transform: translate(50%, -45%) rotate(15deg) scale(0.8); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(50%, -50%) rotate(15deg) scale(0.8);
     }
 }
 
 @keyframes slideOutUp {
     0% {
         opacity: 1;
-        transform: translate(-50%, -45%) scale(1); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) scale(1);
     }
     100% {
         opacity: 0;
@@ -554,55 +528,58 @@ body {
 @keyframes bounceIn {
     0% {
         opacity: 0;
-        transform: translate(-50%, -45%) scale(0.3); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) scale(0.3);
     }
     50% {
         opacity: 1;
-        transform: translate(-50%, -45%) scale(1.1); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) scale(1.1);
     }
     70% {
-        transform: translate(-50%, -45%) scale(0.9); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) scale(0.9);
     }
     100% {
-        transform: translate(-50%, -45%) scale(1); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) scale(1);
     }
 }
 
 @keyframes zoomIn {
     0% {
         opacity: 0;
-        transform: translate(-50%, -45%) scale(0.5) rotate(-10deg); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) scale(0.5) rotate(-10deg);
     }
     100% {
         opacity: 1;
-        transform: translate(-50%, -45%) scale(1) rotate(0); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) scale(1) rotate(0);
     }
 }
 
 @keyframes rotateIn {
     0% {
         opacity: 0;
-        transform: translate(-50%, -45%) rotate(-180deg) scale(0.5); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) rotate(-180deg) scale(0.5);
     }
     100% {
         opacity: 1;
-        transform: translate(-50%, -45%) rotate(0) scale(1); /* ⭐ SESUAIKAN DENGAN 45% */
+        transform: translate(-50%, -50%) rotate(0) scale(1);
     }
 }
 
-/* ===== NAVIGATION SECTION - POSISI LEBIH KE ATAS ===== */
+/* ===== NAVIGATION HINT ===== */
+.navigation-hint {
+    display: none; /* ⭐ HAPUS STYLE LAMA */
+}
+
+/* ===== NAVIGATION BUTTON BARU ===== */
 .navigation-section {
     position: fixed;
-    bottom: clamp(50px, 8vh, 70px) !important; /* ⭐ DINAIKKAN POSISI (dari 90px ke 70px) */
+    bottom: 140px; /* ⭐ POSISI DI ATAS WATERMARK */
     left: 0;
     width: 100%;
     text-align: center;
     z-index: 10;
-    padding: 0 clamp(10px, 3vw, 20px);
+    padding: 0 20px;
     box-sizing: border-box;
     animation: navSectionSlide 0.8s ease-out 1s both;
-    display: flex;
-    justify-content: center;
 }
 
 @keyframes navSectionSlide {
@@ -628,14 +605,14 @@ body {
     );
     background-size: 400% 400%;
     border: none;
-    padding: clamp(12px, 2vw, 18px) clamp(25px, 5vw, 40px);
-    font-size: clamp(1rem, 2.5vw, 1.3rem);
+    padding: 18px 40px;
+    font-size: 1.3rem;
     font-weight: 700;
     color: var(--color-white);
-    border-radius: clamp(40px, 8vw, 50px);
+    border-radius: 50px;
     cursor: pointer;
     font-family: 'Poppins', sans-serif;
-    letter-spacing: clamp(0.5px, 0.5vw, 1px);
+    letter-spacing: 1px;
     transition: all 0.3s;
     animation: 
         gradientShift 3s ease infinite,
@@ -645,15 +622,15 @@ body {
         0 6px 20px rgba(0, 0, 0, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
     overflow: hidden;
-    min-width: min(250px, 70vw);
-    max-width: min(400px, 90vw);
+    min-width: 300px;
+    max-width: 400px;
     width: auto;
     backdrop-filter: blur(10px);
-    border: clamp(2px, 0.6vw, 3px) solid rgba(255, 255, 255, 0.3);
+    border: 3px solid rgba(255, 255, 255, 0.3);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: clamp(10px, 2vw, 15px);
+    gap: 15px;
 }
 
 @keyframes buttonFloat {
@@ -669,11 +646,6 @@ body {
             0 25px 60px rgba(253, 121, 121, 0.6),
             0 10px 30px rgba(0, 0, 0, 0.2);
     }
-}
-
-@keyframes gradientShift {
-    0%, 100% { background-position: 0% 50%; }
-    50% { background-position: 100% 50%; }
 }
 
 .next-memory-btn:hover {
@@ -700,13 +672,11 @@ body {
     text-overflow: ellipsis;
     flex: 1;
     text-align: center;
-    font-size: clamp(0.9rem, 2.3vw, 1.1rem);
 }
 
 .btn-icon {
-    font-size: clamp(1rem, 2.8vw, 1.4rem);
+    font-size: 1.4rem;
     animation: iconBounce 1.5s ease-in-out infinite;
-    flex-shrink: 0;
 }
 
 @keyframes iconBounce {
@@ -739,18 +709,72 @@ body {
 
 /* Watermark adjustment untuk button baru */
 .screen-watermark {
-    bottom: clamp(15px, 3vh, 25px);
+    bottom: 25px; /* ⭐ TURUNKAN UNTUK SPASI DARI BUTTON */
 }
 
-/* ===== END SECTION RESPONSIF ===== */
+@keyframes hintBounce {
+    0%, 100% { 
+        transform: translateY(0);
+        opacity: 0.9;
+    }
+    50% { 
+        transform: translateY(-10px);
+        opacity: 0.7;
+    }
+}
+
+.hint-content {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: var(--color-glass-bg);
+    backdrop-filter: blur(15px);
+    color: var(--color-white);
+    padding: 14px 28px;
+    border-radius: 30px;
+    border: 2px solid var(--color-glass-border);
+    font-size: 1rem;
+    font-weight: 600;
+    box-shadow: 
+        0 15px 35px rgba(0, 0, 0, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    max-width: 400px;
+    width: auto;
+    white-space: nowrap; /* ⭐ SATU BARIS SAJA */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hint-content i {
+    color: var(--color-pink-dark);
+    font-size: 1.4rem;
+    animation: handPoint 1.5s ease-in-out infinite;
+    flex-shrink: 0;
+}
+
+.hint-content span {
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+@keyframes handPoint {
+    0%, 100% { transform: translateY(0) rotate(0); }
+    25% { transform: translateY(-5px) rotate(10deg); }
+    75% { transform: translateY(5px) rotate(-10deg); }
+}
+
+/* ===== END SECTION ===== */
 .end-section {
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) scale(0.8);
     width: 100%;
-    max-width: min(600px, 90vw);
-    padding: clamp(15px, 3vw, 20px);
+    max-width: 600px;
+    padding: 20px;
     opacity: 0;
     pointer-events: none;
     z-index: 20;
@@ -766,10 +790,10 @@ body {
 .end-content {
     background: var(--color-glass-bg);
     backdrop-filter: blur(25px);
-    border-radius: clamp(20px, 4vw, 30px);
-    padding: clamp(25px, 5vw, 40px) clamp(20px, 4vw, 30px);
+    border-radius: 30px;
+    padding: 40px 30px;
     text-align: center;
-    border: clamp(2px, 0.6vw, 3px) solid var(--color-glass-border);
+    border: 3px solid var(--color-glass-border);
     box-shadow: 
         0 25px 60px rgba(253, 172, 172, 0.3),
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
@@ -777,19 +801,17 @@ body {
 
 .end-title {
     font-family: 'Dancing Script', cursive;
-    font-size: clamp(1.8rem, 6vw, 3rem);
+    font-size: 3rem;
     color: var(--color-white);
-    margin-bottom: clamp(15px, 3vh, 25px);
+    margin-bottom: 20px;
     text-shadow: 
         2px 2px 4px rgba(0, 0, 0, 0.3),
         0 0 20px rgba(255, 255, 255, 0.2);
-    line-height: 1.3;
 }
 
 .end-word {
     display: inline-block;
     animation: endWordFloat 2s ease-in-out infinite;
-    margin: 0 clamp(3px, 0.5vw, 5px);
 }
 
 .end-word:nth-child(1) { animation-delay: 0s; }
@@ -803,12 +825,11 @@ body {
 
 .end-message {
     color: var(--color-white);
-    font-size: clamp(1rem, 2.5vw, 1.2rem);
-    margin-bottom: clamp(25px, 4vh, 35px);
+    font-size: 1.2rem;
+    margin-bottom: 35px;
     line-height: 1.5;
     opacity: 0.9;
     animation: messagePulse 3s ease-in-out infinite;
-    padding: 0 clamp(10px, 2vw, 20px);
 }
 
 @keyframes messagePulse {
@@ -816,7 +837,7 @@ body {
     50% { opacity: 0.7; }
 }
 
-/* End Button Responsif */
+/* End Button */
 .end-button {
     position: relative;
     background: linear-gradient(
@@ -829,15 +850,15 @@ body {
     );
     background-size: 400% 400%;
     border: none;
-    padding: clamp(15px, 3vw, 22px) clamp(30px, 6vw, 50px);
-    font-size: clamp(1.2rem, 3vw, 1.8rem);
+    padding: 22px 50px;
+    font-size: 1.8rem;
     font-weight: 800;
     color: var(--color-white);
-    border-radius: clamp(40px, 8vw, 50px);
+    border-radius: 50px;
     cursor: pointer;
     font-family: 'Fredoka One', cursive;
     text-transform: uppercase;
-    letter-spacing: clamp(1px, 0.5vw, 2px);
+    letter-spacing: 2px;
     transition: all 0.3s;
     animation: 
         gradientShift 3s ease infinite,
@@ -847,13 +868,14 @@ body {
         0 8px 25px rgba(0, 0, 0, 0.15),
         inset 0 1px 0 rgba(255, 255, 255, 0.4);
     overflow: hidden;
-    min-width: min(200px, 60vw);
-    max-width: min(350px, 80vw);
+    min-width: 280px;
     backdrop-filter: blur(10px);
-    border: clamp(2px, 0.6vw, 3px) solid rgba(255, 255, 255, 0.3);
-    width: auto;
-    display: block;
-    margin: 0 auto;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+}
+
+@keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
 }
 
 @keyframes buttonPulse {
@@ -887,7 +909,7 @@ body {
 
 .sparkle {
     position: absolute;
-    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    font-size: 1.5rem;
     opacity: 0;
     animation: sparkleFly 2s ease-out infinite;
 }
@@ -946,18 +968,23 @@ body {
     pointer-events: none;
 }
 
-/* ===== WATERMARK RESPONSIF ===== */
+@keyframes glowSweep {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ===== WATERMARK ===== */
 .screen-watermark {
     position: fixed;
-    bottom: clamp(10px, 2vh, 20px) !important; /* ⭐ DINAIKKAN (dari 25px) */
+    bottom: 20px; /* ⭐ DITURUNKAN UNTUK SPASI */
     left: 0;
     width: 100%;
     text-align: center;
     font-family: 'Quicksand', sans-serif;
-    font-size: clamp(0.75rem, 2vw, 1rem);
+    font-size: 1rem;
     font-weight: 600;
     color: var(--color-white);
-    padding: clamp(5px, 1vh, 10px);
+    padding: 5px;
     z-index: 100;
     background: none;
     backdrop-filter: none;
@@ -966,374 +993,347 @@ body {
     text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-/* ===== RESPONSIVE BREAKPOINTS ===== */
-
-/* Tablet (768px dan bawah) */
-@media (max-width: 768px) {
-    :root {
-        --frame-size: min(350px, 75vw, 70vh - 150px);
-    }
-    
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 1024px) {
     .main-title {
-        font-size: clamp(1.8rem, 6vw, 2.5rem);
-    }
-    
-    .title-word {
-        display: block;
-        margin: 5px 0;
+        font-size: 3rem;
     }
     
     .photo-frame {
-        padding: clamp(20px, 4vw, 25px);
-    }
-    
-    .media-caption {
-        font-size: clamp(0.85rem, 2.3vw, 1rem);
-        max-width: min(250px, 70vw);
-    }
-    
-    .next-memory-btn {
-        min-width: min(220px, 65vw);
-        padding: clamp(12px, 2.5vw, 16px) clamp(20px, 4vw, 30px);
-    }
-    
-    .navigation-section {
-        bottom: clamp(60px, 10vh, 75px);
-    }
-
-    .gallery-container {
-        margin-top: -5px;
-        min-height: min(400px, 60vh);
-    }
-    
-    .navigation-section {
-        bottom: clamp(45px, 7vh, 60px) !important;
-    }
-    
-    .media-caption {
-        bottom: clamp(-25px, -2.5vh, -35px) !important;
-    }
-    
-    .screen-watermark {
-        bottom: clamp(8px, 1.5vh, 15px) !important;
-    }
-}
-
-/* Mobile kecil (480px dan bawah) */
-@media (max-width: 480px) {
-    :root {
-        --frame-size: min(280px, 85vw, 65vh - 100px);
-    }
-    
-    .screen3-container {
-        padding: clamp(8px, 2vw, 12px);
-    }
-    
-    .header-section {
-        margin-top: clamp(15px, 4vh, 25px);
-        margin-bottom: clamp(10px, 2vh, 15px);
-    }
-    
-    .main-title {
-        font-size: clamp(1.6rem, 5vw, 2rem);
-    }
-    
-    .photo-frame {
-        padding: clamp(15px, 3vw, 20px);
-        border-width: clamp(2px, 0.8vw, 3px);
-    }
-    
-    .media-caption {
-        bottom: clamp(-35px, -4vh, -45px);
-        font-size: clamp(0.8rem, 2.2vw, 0.9rem);
-        padding: clamp(6px, 1.5vw, 8px) clamp(10px, 2.5vw, 15px);
-        max-width: min(200px, 65vw);
-    }
-    
-    .navigation-section {
-        bottom: clamp(50px, 8vh, 65px);
-        padding: 0 clamp(8px, 2vw, 12px);
-    }
-    
-    .next-memory-btn {
-        padding: clamp(10px, 2vw, 14px) clamp(15px, 3vw, 25px);
-        font-size: clamp(0.9rem, 2.3vw, 1.1rem);
-        min-width: min(200px, 60vw);
-    }
-    
-    .btn-text {
-        font-size: clamp(0.85rem, 2.2vw, 1rem);
-    }
-    
-    .screen-watermark {
-        font-size: clamp(0.7rem, 1.8vw, 0.85rem);
-        bottom: clamp(12px, 2vh, 18px);
-    }
-    
-    .end-content {
-        padding: clamp(20px, 4vw, 25px) clamp(15px, 3vw, 20px);
+        width: 380px;
+        height: 380px;
     }
     
     .end-title {
-        font-size: clamp(1.5rem, 4.5vw, 1.8rem);
-        margin-bottom: clamp(12px, 2.5vh, 20px);
+        font-size: 2.5rem;
+    }
+    
+    .end-button {
+        padding: 20px 45px;
+        font-size: 1.6rem;
+        min-width: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .screen3-container {
+        padding: 15px;
+    }
+    
+    .header-section {
+        margin-top: 30px;
+        margin-bottom: 15px;
+    }
+    
+    .main-title {
+        font-size: 2.5rem;
+    }
+    
+    .title-word {
+        margin: 0 8px;
+    }
+    
+    .photo-frame {
+        width: 320px;
+        height: 320px;
+        padding: 30px;
+    }
+    
+    .frame-corner {
+        font-size: 2rem;
+    }
+    
+    .media-caption {
+        font-size: 1rem;
+        bottom: -45px;
+        padding: 10px 18px;
+        max-width: 280px;
+    }
+    
+    .navigation-hint {
+        bottom: 90px;
+    }
+    
+    .hint-content {
+        padding: 12px 24px;
+        font-size: 0.95rem;
+        max-width: 350px;
+    }
+    
+    .end-content {
+        padding: 30px 20px;
+    }
+    
+    .end-title {
+        font-size: 2.2rem;
     }
     
     .end-message {
-        font-size: clamp(0.95rem, 2.3vw, 1.1rem);
-        margin-bottom: clamp(20px, 3.5vh, 30px);
+        font-size: 1.1rem;
     }
     
     .end-button {
-        padding: clamp(12px, 2.5vw, 15px) clamp(25px, 5vw, 35px);
-        font-size: clamp(1.1rem, 2.7vw, 1.4rem);
-        min-width: min(180px, 55vw);
-    }
-
-    .gallery-container {
-        margin-top: 0;
-        min-height: min(350px, 55vh);
-    }
-    
-    .media-item {
-        top: 43% !important; /* ⭐ LEBIH TINGGI LAGI DI MOBILE */
-    }
-    
-    .navigation-section {
-        bottom: clamp(40px, 6vh, 55px) !important;
-    }
-    
-    .header-section {
-        margin-top: clamp(10px, 3vh, 25px) !important;
-        margin-bottom: clamp(5px, 0.8vh, 10px) !important;
-    }
-    
-    .media-caption {
-        bottom: clamp(-20px, -2vh, -30px) !important;
-        font-size: clamp(0.8rem, 2.2vw, 0.9rem);
+        padding: 18px 40px;
+        font-size: 1.5rem;
+        min-width: 220px;
     }
     
     .screen-watermark {
-        bottom: clamp(5px, 1vh, 12px) !important;
+        font-size: 0.9rem;
+        bottom: 15px;
     }
 }
 
-/* Mode landscape (lebar > tinggi) */
-@media (orientation: landscape) and (max-height: 600px) {
-    :root {
-        --frame-size: min(250px, 50vh, 60vw - 100px);
+@media (max-width: 480px) {
+    .screen3-container {
+        padding: 10px;
     }
     
     .header-section {
-        margin-top: clamp(10px, 2vh, 20px);
-        margin-bottom: clamp(5px, 1vh, 10px);
+        margin-top: 25px;
+        margin-bottom: 10px;
     }
     
     .main-title {
-        font-size: clamp(1.5rem, 4vw, 2rem);
-        margin-bottom: clamp(5px, 1vh, 8px);
+        font-size: 2rem;
     }
     
-    .progress-container {
-        max-width: min(400px, 70vw);
-    }
-    
-    .gallery-container {
-        margin: clamp(5px, 1vh, 15px) 0;
-        min-height: min(350px, 60vh);
-    }
-    
-    .media-caption {
-        bottom: clamp(-30px, -4vh, -40px);
-        font-size: clamp(0.8rem, 1.8vw, 1rem);
-        padding: clamp(5px, 1vh, 8px) clamp(10px, 2vw, 15px);
-    }
-    
-    .navigation-section {
-        bottom: clamp(45px, 8vh, 60px);
-    }
-    
-    .next-memory-btn {
-        padding: clamp(8px, 1.5vw, 12px) clamp(15px, 3vw, 25px);
-        font-size: clamp(0.9rem, 2vw, 1.2rem);
-        min-width: min(200px, 50vw);
-    }
-    
-    .screen-watermark {
-        bottom: clamp(10px, 2vh, 15px);
-        font-size: clamp(0.7rem, 1.5vw, 0.9rem);
-    }
-
-    .gallery-container {
-        margin-top: -15px;
-        min-height: min(300px, 55vh);
-    }
-    
-    .media-item {
-        top: 42% !important; /* ⭐ LEBIH TINGGI DI LANDSCAPE */
-    }
-    
-    .navigation-section {
-        bottom: clamp(35px, 6vh, 50px) !important;
-    }
-    
-    .header-section {
-        margin-top: clamp(5px, 1.5vh, 15px) !important;
-        margin-bottom: clamp(3px, 0.5vh, 8px) !important;
-    }
-    
-    .media-caption {
-        bottom: clamp(-18px, -1.8vh, -25px) !important;
-    }
-    
-    .screen-watermark {
-        bottom: clamp(3px, 0.8vh, 10px) !important;
-    }
-}
-
-/* Device sangat kecil (lebar < 320px) */
-@media (max-width: 320px) {
-    :root {
-        --frame-size: min(240px, 90vw, 60vh - 80px);
-    }
-    
-    .main-title {
-        font-size: clamp(1.4rem, 4.5vw, 1.8rem);
+    .title-word {
+        margin: 0 5px;
+        display: block;
     }
     
     .photo-frame {
-        padding: clamp(12px, 2.5vw, 18px);
+        width: 280px;
+        height: 280px;
+        padding: 25px;
+    }
+    
+    .photo-frame::before,
+    .photo-frame::after {
+        font-size: 1.4rem;
+        letter-spacing: 10px;
+    }
+    
+    .photo-frame::before {
+        top: -20px;
+    }
+    
+    .photo-frame::after {
+        bottom: -20px;
+    }
+    
+    .frame-corner {
+        font-size: 1.6rem;
+    }
+    
+    .media-caption {
+        font-size: 0.9rem;
+        bottom: -40px;
+        padding: 8px 15px;
+        max-width: 240px;
+    }
+    
+    .navigation-hint {
+        bottom: 80px;
+    }
+    
+    .hint-content {
+        padding: 10px 20px;
+        font-size: 0.85rem;
+        max-width: 300px;
+    }
+    
+    .hint-content span {
+        font-size: 0.8rem;
+    }
+    
+    .end-content {
+        padding: 25px 15px;
+        border-radius: 20px;
+    }
+    
+    .end-title {
+        font-size: 1.8rem;
+    }
+    
+    .end-message {
+        font-size: 1rem;
+        margin-bottom: 25px;
+    }
+    
+    .end-button {
+        padding: 15px 35px;
+        font-size: 1.3rem;
+        min-width: 200px;
+        letter-spacing: 1px;
+    }
+    
+    .screen-watermark {
+        font-size: 0.8rem;
+        bottom: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+    .navigation-section {
+        bottom: 80px;
     }
     
     .next-memory-btn {
-        min-width: min(180px, 85vw);
-        padding: clamp(8px, 1.8vw, 12px) clamp(12px, 2.5vw, 20px);
-        font-size: clamp(0.85rem, 2.2vw, 1rem);
+        padding: 16px 35px;
+        font-size: 1.2rem;
+        min-width: 280px;
+        max-width: 350px;
+        gap: 12px;
     }
     
     .btn-text {
-        font-size: clamp(0.8rem, 2vw, 0.95rem);
+        font-size: 1.1rem;
     }
     
-    .end-button {
-        min-width: min(160px, 80vw);
-        padding: clamp(10px, 2vw, 14px) clamp(20px, 4vw, 30px);
-        font-size: clamp(1rem, 2.5vw, 1.3rem);
-    }
-
-    .gallery-container {
-        min-height: min(300px, 50vh);
-    }
-    
-    .media-item {
-        top: 42% !important;
-    }
-    
-    .navigation-section {
-        bottom: clamp(35px, 5vh, 45px) !important;
-    }
-}
-
-/* Device sangat tinggi (tinggi > 1000px) */
-@media (min-height: 1000px) {
-    :root {
-        --frame-size: min(450px, 70vw, 60vh);
-    }
-    
-    .header-section {
-        margin-top: clamp(30px, 6vh, 80px);
-    }
-    
-    .gallery-container {
-        margin: clamp(20px, 3vh, 40px) 0;
-    }
-    
-    .navigation-section {
-        bottom: clamp(80px, 10vh, 120px);
-    }
-
-    .gallery-container {
-        margin-top: -20px;
-        min-height: min(500px, 55vh);
-    }
-    
-    .media-item {
-        top: 46% !important;
-    }
-    
-    .navigation-section {
-        bottom: clamp(60px, 8vh, 90px) !important;
+    .btn-icon {
+        font-size: 1.3rem;
     }
     
     .screen-watermark {
-        bottom: clamp(15px, 2.5vh, 25px) !important;
+        bottom: 20px;
+        font-size: 0.9rem;
     }
 }
 
-/* TV dan layar besar (lebar > 1400px) */
-@media (min-width: 1400px) {
-    :root {
-        --frame-size: 450px;
-        --font-scale: 18px;
-    }
-    
-    .screen3-container {
-        padding: 30px;
-    }
-    
-    .main-title {
-        font-size: 4rem;
-    }
-    
-    .photo-frame {
-        padding: 30px;
-    }
-    
+@media (max-width: 480px) {
     .navigation-section {
-        bottom: 100px;
+        bottom: 70px;
+        padding: 0 15px;
     }
     
     .next-memory-btn {
-        min-width: 350px;
-        padding: 20px 45px;
-        font-size: 1.4rem;
-    }
-}
-
-/* Aksesibilitas untuk pengguna yang lebih suka animasi berkurang */
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
+        padding: 14px 30px;
+        font-size: 1.1rem;
+        min-width: 250px;
+        max-width: 320px;
+        gap: 10px;
+        letter-spacing: 0.5px;
     }
     
-    .floating-emoji,
-    .photo-frame,
-    .media-caption,
-    .next-memory-btn,
-    .end-button {
-        animation: none !important;
+    .btn-text {
+        font-size: 1rem;
+    }
+    
+    .btn-icon {
+        font-size: 1.2rem;
+    }
+    
+    .screen-watermark {
+        bottom: 18px;
+        font-size: 0.8rem;
     }
 }
 
-/* Pastikan tidak ada overflow yang terpotong */
+/* Landscape mode optimization */
+@media (max-height: 700px) and (orientation: landscape) {
+    .header-section {
+        margin-top: 20px;
+        margin-bottom: 10px;
+    }
+    
+    .main-title {
+        font-size: 2rem;
+        margin-bottom: 5px;
+    }
+    
+    .photo-frame {
+        width: 280px;
+        height: 280px;
+        padding: 20px;
+    }
+    
+    .navigation-hint {
+        bottom: 70px;
+    }
+    
+    .hint-content {
+        padding: 8px 18px;
+        font-size: 0.85rem;
+    }
+    
+    .media-caption {
+        bottom: -35px;
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+    
+    .end-content {
+        padding: 20px 15px;
+    }
+    
+    .end-title {
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+    }
+    
+    .end-message {
+        font-size: 1rem;
+        margin-bottom: 20px;
+    }
+    
+    .end-button {
+        padding: 12px 30px;
+        font-size: 1.2rem;
+        min-width: 180px;
+    }
+}
+
+@media (max-height: 700px) and (orientation: landscape) {
+    .navigation-section {
+        bottom: 65px;
+    }
+    
+    .next-memory-btn {
+        padding: 12px 25px;
+        font-size: 1rem;
+        min-width: 230px;
+        max-width: 300px;
+    }
+    
+    .screen-watermark {
+        bottom: 15px;
+    }
+}
+
+/* Very small height devices */
+@media (max-height: 600px) {
+    .header-section {
+        margin-top: 15px;
+    }
+    
+    .main-title {
+        font-size: 1.8rem;
+    }
+    
+    .photo-frame {
+        width: 250px;
+        height: 250px;
+    }
+    
+    .navigation-hint {
+        bottom: 65px;
+    }
+    
+    .hint-content {
+        padding: 6px 15px;
+        font-size: 0.8rem;
+    }
+    
+    .screen-watermark {
+        font-size: 0.75rem;
+        bottom: 10px;
+    }
+}
+
+/* Ensure no overflow */
 html, body {
     overflow-x: hidden;
     width: 100%;
-    max-width: 100%;
-    position: relative;
-}
-
-/* Fix untuk konten yang mungkin masih terpotong */
-.screen3-container * {
-    max-width: 100%;
-}
-
-/* Fix untuk video pada iOS */
-video {
-    -webkit-transform: translateZ(0);
 }

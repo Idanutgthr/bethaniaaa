@@ -1,4 +1,4 @@
-// CONFIGURATION FOR SCREEN 3 - ENHANCED RESPONSIVE
+// CONFIGURATION FOR SCREEN 3
 const SCREEN3_CONFIG = {
     photos: [],
     videos: [],
@@ -12,23 +12,12 @@ const SCREEN3_CONFIG = {
         'slide-in-left', 'slide-in-right', 'slide-in-up',
         'bounce-in', 'zoom-in', 'rotate-in'
     ],
-    frameTypes: ['type-1', 'type-2', 'type-3', 'type-4', 'type-5'],
-    
-    // Responsive settings
-    responsiveSettings: {
-        frameSize: 400,
-        isMobile: false,
-        isLandscape: false,
-        isTouchDevice: false
-    }
+    frameTypes: ['type-1', 'type-2', 'type-3', 'type-4', 'type-5']
 };
 
 // Initialize Screen 3
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📸 Screen 3 - Memory Gallery Initialized');
-    
-    // Detect device type
-    detectDeviceType();
     
     // Elements
     const galleryContainer = document.querySelector('.gallery-container');
@@ -48,38 +37,13 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize
     initGallery();
     createFloatingEmojis();
-    setupResponsiveEvents();
     
     // Event Listener for Next Button ONLY
     nextMemoryBtn.addEventListener('click', handleNextClick);
     
-    // Touch support for mobile
-    if (SCREEN3_CONFIG.responsiveSettings.isTouchDevice) {
-        document.addEventListener('touchstart', function(e) {
-            // Prevent default touch behavior
-            if (e.touches.length === 1) {
-                e.preventDefault();
-            }
-        }, { passive: false });
-        
-        // Double tap prevention
-        let lastTap = 0;
-        document.addEventListener('touchend', function(e) {
-            const currentTime = new Date().getTime();
-            const tapLength = currentTime - lastTap;
-            
-            if (tapLength < 300 && tapLength > 0) {
-                e.preventDefault();
-            }
-            
-            lastTap = currentTime;
-        });
-    }
-    
-    // Keyboard support
+    // Keyboard support (optional)
     document.addEventListener('keydown', function(e) {
         if (e.code === 'Space' || e.code === 'Enter' || e.code === 'ArrowRight') {
-            e.preventDefault();
             handleNextClick();
         }
     });
@@ -90,133 +54,25 @@ document.addEventListener('DOMContentLoaded', function() {
     // Safety check after initialization
     setTimeout(() => {
         ensureButtonVisible();
-        adjustForScreenSize();
-    }, 1000);
+    }, 2000);
     
     // ============================================
-    // RESPONSIVE FUNCTIONS
-    // ============================================
-    
-    function detectDeviceType() {
-        const userAgent = navigator.userAgent.toLowerCase();
-        SCREEN3_CONFIG.responsiveSettings.isTouchDevice = (
-            'ontouchstart' in window ||
-            navigator.maxTouchPoints > 0 ||
-            navigator.msMaxTouchPoints > 0
-        );
-        
-        SCREEN3_CONFIG.responsiveSettings.isMobile = window.innerWidth <= 768;
-        SCREEN3_CONFIG.responsiveSettings.isLandscape = window.innerWidth > window.innerHeight;
-        
-        // Adjust frame size based on screen
-        const screenWidth = window.innerWidth;
-        const screenHeight = window.innerHeight;
-        
-        if (screenWidth <= 480) {
-            SCREEN3_CONFIG.responsiveSettings.frameSize = Math.min(280, screenWidth * 0.85, (screenHeight - 150) * 0.7);
-        } else if (screenWidth <= 768) {
-            SCREEN3_CONFIG.responsiveSettings.frameSize = Math.min(350, screenWidth * 0.75, (screenHeight - 200) * 0.7);
-        } else if (screenWidth <= 1024) {
-            SCREEN3_CONFIG.responsiveSettings.frameSize = Math.min(380, screenWidth * 0.65, (screenHeight - 250) * 0.6);
-        } else {
-            SCREEN3_CONFIG.responsiveSettings.frameSize = Math.min(400, screenWidth * 0.5, (screenHeight - 300) * 0.5);
-        }
-        
-        console.log(`📱 Device detected: Mobile=${SCREEN3_CONFIG.responsiveSettings.isMobile}, Touch=${SCREEN3_CONFIG.responsiveSettings.isTouchDevice}, FrameSize=${SCREEN3_CONFIG.responsiveSettings.frameSize}px`);
-    }
-    
-    function setupResponsiveEvents() {
-        // Debounced resize handler
-        let resizeTimeout;
-        window.addEventListener('resize', function() {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(() => {
-                detectDeviceType();
-                adjustForScreenSize();
-                updateMediaItemPositions();
-            }, 250);
-        });
-        
-        // Orientation change
-        window.addEventListener('orientationchange', function() {
-            setTimeout(() => {
-                detectDeviceType();
-                adjustForScreenSize();
-                updateMediaItemPositions();
-                ensureButtonVisible();
-            }, 500);
-        });
-    }
-    
-    function adjustForScreenSize() {
-        // Adjust button text for mobile
-        if (SCREEN3_CONFIG.responsiveSettings.isMobile) {
-            const btnText = document.querySelector('.btn-text');
-            if (btnText && window.innerWidth < 400) {
-                btnText.textContent = 'Next Memory';
-            }
-        }
-        
-        // Adjust gallery container height for landscape
-        if (SCREEN3_CONFIG.responsiveSettings.isLandscape && window.innerHeight < 500) {
-            const gallery = document.querySelector('.gallery-container');
-            if (gallery) {
-                gallery.style.minHeight = `${Math.min(350, window.innerHeight * 0.6)}px`;
-            }
-            
-            // Adjust button position
-            if (navSection) {
-                navSection.style.bottom = `${Math.max(50, window.innerHeight * 0.12)}px`;
-            }
-        }
-        
-        // Adjust caption position for very small screens
-        if (window.innerHeight < 600) {
-            const captions = document.querySelectorAll('.media-caption');
-            captions.forEach(caption => {
-                caption.style.bottom = `${Math.max(-35, window.innerHeight * -0.08)}px`;
-                caption.style.fontSize = `${Math.max(12, window.innerHeight * 0.02)}px`;
-            });
-        }
-    }
-    
-    function updateMediaItemPositions() {
-        const mediaItems = document.querySelectorAll('.media-item');
-        mediaItems.forEach(item => {
-            if (item.classList.contains('active')) {
-                // Ensure active item is centered
-                item.style.top = '50%';
-                item.style.left = '50%';
-                item.style.transform = 'translate(-50%, -50%)';
-            }
-        });
-    }
-    
-    // ============================================
-    // CORE FUNCTIONS
+    // FUNCTIONS
     // ============================================
     
     // Function to ensure button is always visible
     function ensureButtonVisible() {
         if (nextMemoryBtn && navSection) {
-            // Force show button
             nextMemoryBtn.style.display = 'inline-flex';
             nextMemoryBtn.style.visibility = 'visible';
             nextMemoryBtn.style.opacity = '1';
             nextMemoryBtn.disabled = false;
             nextMemoryBtn.style.cursor = 'pointer';
-            nextMemoryBtn.style.pointerEvents = 'auto';
             
-            navSection.style.display = 'flex';
+            navSection.style.display = 'block';
             navSection.style.visibility = 'visible';
             navSection.style.opacity = '1';
             navSection.style.pointerEvents = 'auto';
-            
-            // Adjust for mobile touch
-            if (SCREEN3_CONFIG.responsiveSettings.isTouchDevice) {
-                nextMemoryBtn.style.touchAction = 'manipulation';
-                nextMemoryBtn.style.WebkitTapHighlightColor = 'transparent';
-            }
             
             console.log('✅ Button visibility ensured');
         }
@@ -227,7 +83,6 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e) {
             e.preventDefault();
             e.stopPropagation();
-            e.stopImmediatePropagation();
             console.log('🔄 Next button clicked');
         }
         
@@ -290,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Show first media item after delay
         setTimeout(() => {
             showMediaItem(0);
-        }, 800);
+        }, 1000);
     }
     
     // Detect available media files
@@ -335,45 +190,12 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Show message if no media found
     function showNoMediaMessage() {
-        const galleryContainer = document.querySelector('.gallery-container');
-        if (!galleryContainer) return;
-        
         galleryContainer.innerHTML = `
-            <div class="no-media-message" style="
-                text-align: center;
-                padding: 40px 20px;
-                color: var(--color-white);
-                max-width: 500px;
-                margin: 0 auto;
-            ">
-                <i class="fas fa-images" style="
-                    font-size: clamp(3rem, 8vw, 4rem);
-                    margin-bottom: 20px;
-                    color: var(--color-white);
-                    opacity: 0.7;
-                "></i>
-                <h3 style="
-                    color: var(--color-white);
-                    margin-bottom: 15px;
-                    font-size: clamp(1.2rem, 4vw, 1.5rem);
-                ">No Memories Found</h3>
-                <p style="
-                    color: var(--color-white);
-                    opacity: 0.8;
-                    margin-bottom: 25px;
-                    font-size: clamp(0.9rem, 3vw, 1.1rem);
-                ">Please add photos or videos to the assets folder.</p>
-                <button onclick="goToScreen4()" style="
-                    margin-top: 20px;
-                    padding: clamp(10px, 2vw, 12px) clamp(25px, 4vw, 30px);
-                    background: var(--color-pink-medium);
-                    border: none;
-                    border-radius: 25px;
-                    color: white;
-                    font-weight: bold;
-                    cursor: pointer;
-                    font-size: clamp(0.9rem, 2.5vw, 1.1rem);
-                ">
+            <div class="no-media-message">
+                <i class="fas fa-images" style="font-size: 4rem; margin-bottom: 20px; color: var(--color-white); opacity: 0.7;"></i>
+                <h3 style="color: var(--color-white); margin-bottom: 10px;">No Memories Found</h3>
+                <p style="color: var(--color-white); opacity: 0.8;">Please add photos or videos to the assets folder.</p>
+                <button onclick="goToScreen4()" style="margin-top: 20px; padding: 12px 30px; background: var(--color-pink-medium); border: none; border-radius: 25px; color: white; font-weight: bold; cursor: pointer;">
                     Continue to Next Screen
                 </button>
             </div>
@@ -382,9 +204,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Setup gallery container with media items
     function setupGallery() {
-        const galleryContainer = document.querySelector('.gallery-container');
-        if (!galleryContainer) return;
-        
         galleryContainer.innerHTML = '';
         
         // Prevent clicks on gallery container
@@ -428,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
             mediaDiv.innerHTML = `
                 <div class="photo-frame ${frameType}">
                     <div class="video-content">
-                        <video preload="metadata" playsinline webkit-playsinline>
+                        <video preload="metadata" controls>
                             <source src="assets/videos/${filename}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
@@ -451,86 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
             `;
         }
         
-        // Add video controls if video
-        if (!isPhoto) {
-            setTimeout(() => {
-                setupVideoControls(mediaDiv);
-            }, 100);
-        }
-        
         return mediaDiv;
-    }
-    
-    // Setup video controls
-    function setupVideoControls(mediaDiv) {
-        const video = mediaDiv.querySelector('video');
-        const playBtn = mediaDiv.querySelector('.play-btn');
-        const volumeBtn = mediaDiv.querySelector('.volume-btn');
-        const fullscreenBtn = mediaDiv.querySelector('.fullscreen-btn');
-        
-        if (video && playBtn) {
-            // Play/Pause
-            playBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (video.paused) {
-                    video.play();
-                    playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-                } else {
-                    video.pause();
-                    playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                }
-            });
-            
-            // Video events
-            video.addEventListener('play', () => {
-                playBtn.innerHTML = '<i class="fas fa-pause"></i>';
-            });
-            
-            video.addEventListener('pause', () => {
-                playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            });
-            
-            video.addEventListener('ended', () => {
-                playBtn.innerHTML = '<i class="fas fa-play"></i>';
-            });
-        }
-        
-        if (video && volumeBtn) {
-            // Volume toggle
-            let isMuted = false;
-            volumeBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                isMuted = !isMuted;
-                video.muted = isMuted;
-                volumeBtn.innerHTML = isMuted ? 
-                    '<i class="fas fa-volume-mute"></i>' : 
-                    '<i class="fas fa-volume-up"></i>';
-            });
-        }
-        
-        if (video && fullscreenBtn) {
-            // Fullscreen toggle
-            fullscreenBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                if (!document.fullscreenElement) {
-                    if (video.requestFullscreen) {
-                        video.requestFullscreen();
-                    } else if (video.webkitRequestFullscreen) {
-                        video.webkitRequestFullscreen();
-                    } else if (video.mozRequestFullScreen) {
-                        video.mozRequestFullScreen();
-                    }
-                } else {
-                    if (document.exitFullscreen) {
-                        document.exitFullscreen();
-                    } else if (document.webkitExitFullscreen) {
-                        document.webkitExitFullscreen();
-                    } else if (document.mozCancelFullScreen) {
-                        document.mozCancelFullScreen();
-                    }
-                }
-            });
-        }
     }
     
     // Show next media item
@@ -629,7 +369,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Ensure button is visible
                         if (navSection) {
-                            navSection.style.display = 'flex';
+                            navSection.style.display = 'block';
                             navSection.style.opacity = '1';
                             navSection.style.visibility = 'visible';
                         }
@@ -678,20 +418,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Auto-play after delay
                 setTimeout(() => {
-                    const playPromise = video.play();
-                    
-                    if (playPromise !== undefined) {
-                        playPromise.catch(error => {
-                            console.log('Video autoplay prevented:', error.name);
-                            
-                            // Show play button if autoplay blocked
-                            const playBtn = mediaItem.querySelector('.play-btn');
-                            if (playBtn) {
-                                playBtn.style.display = 'flex';
-                                playBtn.innerHTML = '<i class="fas fa-play"></i>';
-                            }
-                        });
-                    }
+                    video.play().catch(e => {
+                        console.log('Video autoplay prevented:', e.name);
+                        
+                        // Show play button if autoplay blocked
+                        const playBtn = mediaItem.querySelector('.play-btn');
+                        if (playBtn) {
+                            playBtn.style.display = 'flex';
+                            playBtn.innerHTML = '<i class="fas fa-play"></i>';
+                        }
+                    });
                 }, 500);
             } else {
                 // If not a video, ensure button is visible
@@ -754,8 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Remove event listeners
         if (nextMemoryBtn) {
-            const newNextBtn = nextMemoryBtn.cloneNode(true);
-            nextMemoryBtn.parentNode.replaceChild(newNextBtn, nextMemoryBtn);
+            nextMemoryBtn.removeEventListener('click', handleNextClick);
         }
         
         // Stop all playing videos
@@ -795,11 +530,6 @@ document.addEventListener('DOMContentLoaded', function() {
                         endBtn.style.pointerEvents = 'auto';
                         endBtn.style.cursor = 'pointer';
                         endBtn.disabled = false;
-                        
-                        // Add touch support for mobile
-                        if (SCREEN3_CONFIG.responsiveSettings.isTouchDevice) {
-                            endBtn.style.touchAction = 'manipulation';
-                        }
                     }
                 }, 500);
                 
@@ -816,12 +546,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Create floating emojis
     function createFloatingEmojis() {
-        const floatingEmojisContainer = document.getElementById('floating-emojis');
-        if (!floatingEmojisContainer) return;
-        
         const emojis = ['❤️', '💖', '💕', '💗', '💓', '✨', '🌟', '💫', '🌸', '📸', '🎥', '🎬', '💌'];
         
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 20; i++) {
             setTimeout(() => {
                 createFloatingEmoji();
             }, i * 200);
@@ -834,10 +561,7 @@ document.addEventListener('DOMContentLoaded', function() {
             emoji.className = 'floating-emoji';
             emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
             emoji.style.left = Math.random() * 100 + 'vw';
-            
-            // Responsive font size
-            const fontSize = Math.random() * 20 + 15;
-            emoji.style.fontSize = `${Math.min(fontSize, window.innerWidth * 0.05)}px`;
+            emoji.style.fontSize = (Math.random() * 25 + 20) + 'px';
             
             const duration = Math.random() * 10 + 5;
             const delay = Math.random() * 3;
@@ -869,8 +593,8 @@ document.addEventListener('DOMContentLoaded', function() {
             confetti.className = 'confetti-piece';
             confetti.style.cssText = `
                 position: fixed;
-                width: ${Math.random() * 10 + 5}px;
-                height: ${Math.random() * 10 + 5}px;
+                width: 10px;
+                height: 10px;
                 background: ${colors[Math.floor(Math.random() * colors.length)]};
                 top: -20px;
                 left: ${Math.random() * 100}vw;
@@ -916,132 +640,4 @@ document.addEventListener('DOMContentLoaded', function() {
             window.location.href = 'screen4.html';
         }, 800);
     }
-    
-    // Make functions globally available
-    window.goToScreen4 = goToScreen4;
-});
-
-// ============================================
-// FUNGSI UNTUK UPDATE POSISI GALLERY
-// ============================================
-
-function updateGalleryPosition() {
-    const gallery = document.querySelector('.gallery-container');
-    const mediaItems = document.querySelectorAll('.media-item');
-    const header = document.querySelector('.header-section');
-    
-    if (!gallery) return;
-    
-    // Hitung posisi optimal berdasarkan tinggi layar
-    const screenHeight = window.innerHeight;
-    const headerHeight = header ? header.offsetHeight : 0;
-    
-    // Atur tinggi gallery berdasarkan layar
-    let galleryHeight;
-    if (screenHeight <= 600) {
-        galleryHeight = Math.min(350, screenHeight * 0.6);
-    } else if (screenHeight <= 800) {
-        galleryHeight = Math.min(400, screenHeight * 0.55);
-    } else {
-        galleryHeight = Math.min(450, screenHeight * 0.5);
-    }
-    
-    gallery.style.minHeight = `${galleryHeight}px`;
-    
-    // Update semua media item position
-    mediaItems.forEach(item => {
-        // Sesuaikan top position berdasarkan device
-        let topPosition = 45; // default 45%
-        
-        if (screenHeight <= 480) {
-            topPosition = 43; // lebih tinggi di mobile kecil
-        } else if (window.innerWidth > window.innerHeight && screenHeight <= 600) {
-            topPosition = 42; // lebih tinggi di landscape
-        } else if (screenHeight > 1000) {
-            topPosition = 46; // sedikit lebih rendah di tablet besar
-        }
-        
-        item.style.top = `${topPosition}%`;
-        
-        // Update transform untuk item aktif
-        if (item.classList.contains('active')) {
-            const transform = item.style.transform;
-            if (transform.includes('translate(-50%, -50%)')) {
-                item.style.transform = transform.replace('translate(-50%, -50%)', `translate(-50%, -${topPosition}%)`);
-            } else if (transform.includes('translate(-50%, -45%)')) {
-                item.style.transform = transform.replace('translate(-50%, -45%)', `translate(-50%, -${topPosition}%)`);
-            }
-        }
-    });
-    
-    // Update button position
-    updateButtonPosition();
-}
-
-function updateButtonPosition() {
-    const navSection = document.getElementById('nav-section');
-    const screenHeight = window.innerHeight;
-    
-    if (!navSection) return;
-    
-    // Hitung posisi button berdasarkan tinggi layar
-    let bottomPosition;
-    if (screenHeight <= 480) {
-        bottomPosition = Math.max(40, screenHeight * 0.08); // 8% dari tinggi layar
-    } else if (screenHeight <= 600) {
-        bottomPosition = Math.max(45, screenHeight * 0.07); // 7% dari tinggi layar
-    } else if (screenHeight <= 800) {
-        bottomPosition = Math.max(50, screenHeight * 0.065); // 6.5% dari tinggi layar
-    } else {
-        bottomPosition = Math.max(60, screenHeight * 0.06); // 6% dari tinggi layar
-    }
-    
-    navSection.style.bottom = `${bottomPosition}px`;
-}
-
-// Panggil fungsi update posisi saat resize dan orientation change
-function setupPositionUpdates() {
-    // Update posisi saat inisialisasi
-    updateGalleryPosition();
-    
-    // Update posisi saat resize (debounced)
-    let resizeTimeout;
-    window.addEventListener('resize', () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(() => {
-            updateGalleryPosition();
-        }, 100);
-    });
-    
-    // Update posisi saat orientation change
-    window.addEventListener('orientationchange', () => {
-        setTimeout(() => {
-            updateGalleryPosition();
-        }, 300);
-    });
-    
-    // Update posisi saat media item berubah
-    const observer = new MutationObserver(() => {
-        updateGalleryPosition();
-    });
-    
-    const gallery = document.querySelector('.gallery-container');
-    if (gallery) {
-        observer.observe(gallery, { childList: true, subtree: true });
-    }
-}
-
-// Tambahkan panggilan di DOMContentLoaded
-document.addEventListener('DOMContentLoaded', function() {
-    // ... kode existing ...
-    
-    // Setup position updates
-    setupPositionUpdates();
-    
-    // Initial position adjustment
-    setTimeout(() => {
-        updateGalleryPosition();
-    }, 500);
-    
-    // ... kode existing ...
 });
